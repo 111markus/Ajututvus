@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function TeacherLogin({ onLogin, error }) {
+export default function TeacherLogin({ onLogin, onBack, error }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -15,9 +15,9 @@ export default function TeacherLogin({ onLogin, error }) {
         onSubmit={handleSubmit}
         className="bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-sm card-rgb"
       >
-        <h1 className="text-4xl text-center mb-2">🎓</h1>
+        <h1 className="text-4xl text-center mb-2">🎮</h1>
         <h2 className="text-xl font-bold text-center text-white mb-6">
-          Õpetaja sisselogimine
+          Gamemaster sisselogimine
         </h2>
 
         <div className="space-y-4">
@@ -52,6 +52,14 @@ export default function TeacherLogin({ onLogin, error }) {
             className="w-full bg-cyan-600 text-white text-lg font-semibold py-3 rounded-xl hover:bg-cyan-500 transition shadow-lg shadow-cyan-600/30"
           >
             Logi sisse
+          </button>
+
+          <button
+            type="button"
+            onClick={onBack}
+            className="w-full text-gray-500 text-sm underline hover:text-gray-300"
+          >
+            ← Tagasi
           </button>
 
           {error && <p className="text-red-400 text-sm text-center">{error}</p>}

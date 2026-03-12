@@ -31,17 +31,6 @@ function createPairs(playerIds) {
   return pairs;
 }
 
-// Build the initial role assignments for a pair/group
-// 2-member pair: [kysija, vastaja] — each asks 3 times = 6 questions
-// 3-member group: [kysija, vastaja, vastaja] — each asks 2 times = 6 questions
-function buildPairRoles(memberIds) {
-  const roles = {};
-  memberIds.forEach((id, idx) => {
-    roles[id] = idx === 0 ? "kysija" : "vastaja";
-  });
-  return roles;
-}
-
 // Rotate who is the kysija in a group
 function rotateRoles(members) {
   const ids = Object.keys(members);
@@ -58,12 +47,27 @@ function rotateRoles(members) {
   return updated;
 }
 
+// Build pairs object for Firebase
+function buildPairsObj(playerIds, roomData) {
+  const pairs = createPairs(playerIds);
+  const pairsObj = {};
+  pairs.forEach((group, idx) => {
+    const members = {};
+    group.forEach((pid, pidx) => {
+      members[pid] = {
+        name: roomData.players[pid].name,
+        role: pidx === 0 ? "kysija" : "vastaja",
+      };
+    });
+    pairsObj["pair_" + idx] = { members };
+  });
+  return pairsObj;
+}
+
 export function useAjututvus() {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(() => {
-    // Restore teacher session from localStorage
-    const saved = localStorage.getItem("ajututvus_role");
-    return saved || null;
+    return localStorage.getItem("ajututvus_role") || null;
   });
   const [roomCode, setRoomCode] = useState(() => {
     return localStorage.getItem("ajututvus_roomCode") || null;
@@ -71,6 +75,9 @@ export function useAjututvus() {
   const [roomData, setRoomData] = useState(null);
   const [error, setError] = useState(null);
   const [timerValue, setTimerValue] = useState(30);
+  const [totalRounds, setTotalRounds] = useState(() => {
+    return parseInt(localStorage.getItem("ajututvus_totalRounds") || "3", 10);
+  });
   const timerRef = useRef(null);
   const autoAdvanceRef = useRef(false);
 
@@ -85,6 +92,10 @@ export function useAjututvus() {
     else localStorage.removeItem("ajututvus_roomCode");
   }, [roomCode]);
 
+  useEffect(() => {
+    localStorage.setItem("ajututvus_totalRounds", String(totalRounds));
+  }, [totalRounds]);
+
   // Auth
   useEffect(() => {
     signInPlayer().catch((err) => setError(err.message));
@@ -95,11 +106,10 @@ export function useAjututvus() {
   // Listen to room data
   useEffect(() => {
     if (!roomCode) return;
-    const roomRef = ref(db, `rooms/${roomCode}`);
+    const roomRef = ref(db, "rooms/" + roomCode);
     const unsub = onValue(roomRef, (snap) => {
       const data = snap.val();
       if (!data) {
-        // Room was deleted
         setRoomData(null);
         setRoomCode(null);
         return;
@@ -125,7 +135,6 @@ export function useAjututvus() {
         const remaining = Math.max(0, 30 - elapsed);
         setTimerValue(remaining);
 
-        // Auto-advance: only the teacher triggers it to avoid race conditions
         if (remaining === 0 && role === "teacher" && !autoAdvanceRef.current) {
           autoAdvanceRef.current = true;
           advanceQuestion();
@@ -142,12 +151,13 @@ export function useAjututvus() {
     role,
   ]);
 
-  // ========== TEACHER ACTIONS ==========
+  // ========== GAMEMASTER ACTIONS ==========
 
   const teacherLogin = useCallback((username, password) => {
     if (username === "Opetaja" && password === "Voco123") {
       setRole("teacher");
       setError(null);
+      localStorage.setItem("ajututvus_gm_auth", "true");
       return true;
     }
     setError("Vale kasutajanimi või parool!");
@@ -160,6 +170,8 @@ export function useAjututvus() {
     setRoomData(null);
     localStorage.removeItem("ajututvus_role");
     localStorage.removeItem("ajututvus_roomCode");
+    localStorage.removeItem("ajututvus_gm_auth");
+    localStorage.removeItem("ajututvus_totalRounds");
   }, []);
 
   const createRoom = useCallback(async () => {
@@ -169,15 +181,12 @@ export function useAjututvus() {
     }
     try {
       const code = generateRoomCode();
-      const roomRef = ref(db, `rooms/${code}`);
+      const roomRef = ref(db, "rooms/" + code);
 
       const existing = await get(roomRef);
       if (existing.exists()) {
         return createRoom();
       }
-
-      // Always pick 6 random questions per game
-      const gameQuestions = shuffleArray(QUESTIONS).slice(0, 6);
 
       await set(roomRef, {
         status: "lobby",
@@ -185,8 +194,10 @@ export function useAjututvus() {
         players: {},
         pairs: null,
         currentQuestionIndex: 0,
+        currentRound: 0,
+        totalRounds: totalRounds,
         totalQuestions: 6,
-        questions: gameQuestions,
+        questions: null,
         timerStart: null,
         createdAt: Date.now(),
       });
@@ -198,33 +209,7 @@ export function useAjututvus() {
       console.error("createRoom error:", err);
       setError("Toa loomine ebaõnnestus: " + err.message);
     }
-  }, [user]);
-
-  const randomizePairs = useCallback(async () => {
-    if (!roomCode || !roomData) return;
-    const playerIds = Object.keys(roomData.players || {});
-    if (playerIds.length < 2) {
-      setError("Vaja on vähemalt 2 mängijat!");
-      return;
-    }
-
-    const pairs = createPairs(playerIds);
-    const pairsObj = {};
-    pairs.forEach((group, idx) => {
-      const members = {};
-      group.forEach((pid, pidx) => {
-        members[pid] = {
-          name: roomData.players[pid].name,
-          role: pidx === 0 ? "kysija" : "vastaja",
-        };
-      });
-      pairsObj[`pair_${idx}`] = { members };
-    });
-
-    await update(ref(db, `rooms/${roomCode}`), {
-      pairs: pairsObj,
-    });
-  }, [roomCode, roomData]);
+  }, [user, totalRounds]);
 
   const startGame = useCallback(async () => {
     if (!roomCode || !roomData) return;
@@ -234,43 +219,58 @@ export function useAjututvus() {
       return;
     }
 
-    // If pairs haven't been randomized yet, do it now
-    let pairsObj = roomData.pairs;
-    if (!pairsObj) {
-      const pairs = createPairs(playerIds);
-      pairsObj = {};
-      pairs.forEach((group, idx) => {
-        const members = {};
-        group.forEach((pid, pidx) => {
-          members[pid] = {
-            name: roomData.players[pid].name,
-            role: pidx === 0 ? "kysija" : "vastaja",
-          };
-        });
-        pairsObj[`pair_${idx}`] = { members };
-      });
-    }
+    // Auto-create pairs
+    const pairsObj = buildPairsObj(playerIds, roomData);
 
-    await update(ref(db, `rooms/${roomCode}`), {
+    // Pick 6 random questions for this round
+    const gameQuestions = shuffleArray(QUESTIONS).slice(0, 6);
+
+    await update(ref(db, "rooms/" + roomCode), {
       status: "playing",
       pairs: pairsObj,
       currentQuestionIndex: 0,
+      currentRound: 1,
+      totalRounds: totalRounds,
+      questions: gameQuestions,
       timerStart: Date.now(),
       answers: null,
+      readyPlayers: null,
     });
-  }, [roomCode, roomData]);
+  }, [roomCode, roomData, totalRounds]);
 
-  // Core question advance logic (used by auto-advance and manual button)
+  // Core question advance logic
   const advanceQuestion = useCallback(async () => {
     if (!roomCode || !roomData) return;
     const nextIdx = (roomData.currentQuestionIndex || 0) + 1;
     const total = roomData.totalQuestions || 6;
+    const currentRound = roomData.currentRound || 1;
+    const maxRounds = roomData.totalRounds || totalRounds;
 
+    // If all 6 questions in this round are done
     if (nextIdx >= total) {
-      await update(ref(db, `rooms/${roomCode}`), {
-        status: "finished",
-        timerStart: null,
-      });
+      if (currentRound < maxRounds) {
+        // Generate new pairs for next round
+        const playerIds = Object.keys(roomData.players || {});
+        const newPairsObj = buildPairsObj(playerIds, roomData);
+        const newQuestions = shuffleArray(QUESTIONS).slice(0, 6);
+
+        await update(ref(db, "rooms/" + roomCode), {
+          status: "round_end",
+          pairs: newPairsObj,
+          currentRound: currentRound + 1,
+          questions: newQuestions,
+          currentQuestionIndex: 0,
+          timerStart: null,
+          answers: null,
+          readyPlayers: null,
+        });
+      } else {
+        // All rounds finished
+        await update(ref(db, "rooms/" + roomCode), {
+          status: "finished",
+          timerStart: null,
+        });
+      }
       return;
     }
 
@@ -282,13 +282,13 @@ export function useAjututvus() {
       };
     }
 
-    await update(ref(db, `rooms/${roomCode}`), {
+    await update(ref(db, "rooms/" + roomCode), {
       currentQuestionIndex: nextIdx,
       timerStart: Date.now(),
       pairs: updatedPairs,
       answers: null,
     });
-  }, [roomCode, roomData]);
+  }, [roomCode, roomData, totalRounds]);
 
   const nextQuestion = useCallback(async () => {
     await advanceQuestion();
@@ -296,7 +296,7 @@ export function useAjututvus() {
 
   const endGame = useCallback(async () => {
     if (!roomCode) return;
-    await update(ref(db, `rooms/${roomCode}`), {
+    await update(ref(db, "rooms/" + roomCode), {
       status: "finished",
       timerStart: null,
     });
@@ -304,19 +304,29 @@ export function useAjututvus() {
 
   const deleteRoom = useCallback(async () => {
     if (!roomCode) return;
-    await remove(ref(db, `rooms/${roomCode}`));
+    await remove(ref(db, "rooms/" + roomCode));
     setRoomCode(null);
     setRoomData(null);
   }, [roomCode]);
 
-  // ========== STUDENT ACTIONS ==========
+  // GM: Force start next round
+  const startNextRound = useCallback(async () => {
+    if (!roomCode || !roomData) return;
+    await update(ref(db, "rooms/" + roomCode), {
+      status: "playing",
+      timerStart: Date.now(),
+      readyPlayers: null,
+    });
+  }, [roomCode, roomData]);
+
+  // ========== MÄNGIJA ACTIONS ==========
 
   const joinRoom = useCallback(
     async (code, name) => {
       if (!user) return;
-      const upperCode = code.toUpperCase().trim();
+      const trimmedCode = code.trim();
       try {
-        const roomRef = ref(db, `rooms/${upperCode}`);
+        const roomRef = ref(db, "rooms/" + trimmedCode);
         const snap = await get(roomRef);
 
         if (!snap.exists()) {
@@ -330,13 +340,13 @@ export function useAjututvus() {
           return false;
         }
 
-        await update(ref(db, `rooms/${upperCode}/players/${user.uid}`), {
+        await update(ref(db, "rooms/" + trimmedCode + "/players/" + user.uid), {
           name: name.trim(),
           joinedAt: Date.now(),
         });
 
         setRole("student");
-        setRoomCode(upperCode);
+        setRoomCode(trimmedCode);
         setError(null);
         return true;
       } catch (err) {
@@ -352,7 +362,7 @@ export function useAjututvus() {
       if (!roomCode || !user) return;
       const qIdx = roomData?.currentQuestionIndex || 0;
 
-      await update(ref(db, `rooms/${roomCode}/answers/q${qIdx}/${pairKey}`), {
+      await update(ref(db, "rooms/" + roomCode + "/answers/q" + qIdx + "/" + pairKey), {
         answer,
         submittedBy: user.uid,
         timestamp: Date.now(),
@@ -361,10 +371,18 @@ export function useAjututvus() {
     [roomCode, roomData, user],
   );
 
+  // Player marks themselves as ready for next round
+  const markReady = useCallback(async () => {
+    if (!roomCode || !user) return;
+    await update(ref(db, "rooms/" + roomCode + "/readyPlayers"), {
+      [user.uid]: true,
+    });
+  }, [roomCode, user]);
+
   const leaveRoom = useCallback(async () => {
     if (!roomCode || !user) return;
     if (role === "student") {
-      await remove(ref(db, `rooms/${roomCode}/players/${user.uid}`));
+      await remove(ref(db, "rooms/" + roomCode + "/players/" + user.uid));
     }
     setRoomCode(null);
     setRoomData(null);
@@ -399,18 +417,21 @@ export function useAjututvus() {
     error,
     setError,
     timerValue,
-    // Teacher
+    totalRounds,
+    setTotalRounds,
+    // Gamemaster
     teacherLogin,
     teacherLogout,
     createRoom,
-    randomizePairs,
     startGame,
+    startNextRound,
     nextQuestion,
     endGame,
     deleteRoom,
-    // Student
+    // Mängija
     joinRoom,
     submitAnswer,
+    markReady,
     leaveRoom,
     getMyPairInfo,
   };

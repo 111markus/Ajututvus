@@ -13,23 +13,26 @@ function App() {
     error,
     setError,
     timerValue,
-    // Teacher
+    totalRounds,
+    setTotalRounds,
+    // Gamemaster
     teacherLogin,
     teacherLogout,
     createRoom,
-    randomizePairs,
     startGame,
+    startNextRound,
     nextQuestion,
     endGame,
     deleteRoom,
-    // Student
+    // Mängija
     joinRoom,
     submitAnswer,
+    markReady,
     leaveRoom,
     getMyPairInfo,
   } = useAjututvus();
 
-  // Loading — waiting for anonymous auth
+  // Loading
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-950">
@@ -51,14 +54,14 @@ function App() {
               onClick={() => setRole("teacher_login")}
               className="w-full bg-cyan-600 text-white text-lg font-semibold py-4 rounded-xl hover:bg-cyan-500 transition shadow-lg shadow-cyan-600/30 flex items-center justify-center gap-2"
             >
-              🎓 Õpetaja
+              🎮 Gamemaster
             </button>
 
             <button
               onClick={() => setRole("student")}
               className="w-full bg-purple-600 text-white text-lg font-semibold py-4 rounded-xl hover:bg-purple-500 transition shadow-lg shadow-purple-600/30 flex items-center justify-center gap-2"
             >
-              🎒 Õpilane
+              🎲 Mängija
             </button>
           </div>
         </div>
@@ -66,28 +69,31 @@ function App() {
     );
   }
 
-  // ---- TEACHER LOGIN ----
+  // ---- GM LOGIN ----
   if (role === "teacher_login") {
     return (
       <TeacherLogin
         onLogin={(u, p) => {
           teacherLogin(u, p);
         }}
+        onBack={() => setRole(null)}
         error={error}
       />
     );
   }
 
-  // ---- TEACHER VIEW ----
+  // ---- GM VIEW ----
   if (role === "teacher") {
     return (
       <TeacherView
         roomCode={roomCode}
         roomData={roomData}
         timerValue={timerValue}
+        totalRounds={totalRounds}
+        setTotalRounds={setTotalRounds}
         createRoom={createRoom}
-        randomizePairs={randomizePairs}
         startGame={startGame}
+        startNextRound={startNextRound}
         nextQuestion={nextQuestion}
         endGame={endGame}
         deleteRoom={() => {
@@ -99,7 +105,7 @@ function App() {
     );
   }
 
-  // ---- STUDENT VIEW ----
+  // ---- MÄNGIJA VIEW ----
   if (role === "student") {
     return (
       <StudentView
@@ -109,6 +115,7 @@ function App() {
         timerValue={timerValue}
         joinRoom={joinRoom}
         submitAnswer={submitAnswer}
+        markReady={markReady}
         leaveRoom={() => {
           leaveRoom();
         }}

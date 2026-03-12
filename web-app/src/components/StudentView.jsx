@@ -7,6 +7,7 @@ export default function StudentView({
   timerValue,
   joinRoom,
   submitAnswer,
+  markReady,
   leaveRoom,
   getMyPairInfo,
   error,
@@ -16,18 +17,26 @@ export default function StudentView({
   const [nameInput, setNameInput] = useState("");
   const [answerInput, setAnswerInput] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [markedReady, setMarkedReady] = useState(false);
 
   const status = roomData?.status;
   const pairInfo = getMyPairInfo ? getMyPairInfo() : null;
   const currentQ = roomData?.questions?.[roomData?.currentQuestionIndex || 0];
   const currentQIdx = roomData?.currentQuestionIndex || 0;
   const totalQ = roomData?.totalQuestions || 6;
+  const currentRound = roomData?.currentRound || 1;
+  const maxRounds = roomData?.totalRounds || 1;
 
   // Reset submitted state when question changes
   useEffect(() => {
     setSubmitted(false);
     setAnswerInput("");
   }, [currentQIdx]);
+
+  // Reset markedReady when round changes
+  useEffect(() => {
+    setMarkedReady(false);
+  }, [currentRound]);
 
   // Timer display classes
   let timerClass = "timer-rgb";
@@ -99,6 +108,13 @@ export default function StudentView({
               Liitu
             </button>
 
+            <button
+              onClick={leaveRoom}
+              className="w-full text-gray-500 text-sm underline hover:text-gray-300"
+            >
+              ← Tagasi
+            </button>
+
             {error && (
               <p className="text-red-400 text-sm text-center">{error}</p>
             )}
@@ -108,7 +124,7 @@ export default function StudentView({
     );
   }
 
-  // ---- LOBBY (waiting for teacher to start) ----
+  // ---- LOBBY (waiting for GM to start) ----
   if (status === "lobby") {
     const players = roomData?.players ? Object.values(roomData.players) : [];
     return (
@@ -116,7 +132,7 @@ export default function StudentView({
         <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-sm text-center">
           <div className="text-5xl mb-4 animate-bounce">⏳</div>
           <h2 className="text-2xl font-bold text-white mb-2">Ootame...</h2>
-          <p className="text-gray-400 mb-6">Õpetaja alustab mängu peagi</p>
+          <p className="text-gray-400 mb-6">Gamemaster alustab mängu peagi</p>
 
           <div className="bg-gray-800 rounded-xl p-4 mb-4">
             <p className="text-sm text-gray-500 mb-2">
@@ -138,7 +154,7 @@ export default function StudentView({
             onClick={leaveRoom}
             className="text-red-400 text-sm underline hover:text-red-300"
           >
-            Lahku toast
+            ← Tagasi (lahku toast)
           </button>
         </div>
       </div>
@@ -153,6 +169,13 @@ export default function StudentView({
     return (
       <div className="min-h-screen bg-gray-950 p-4">
         <div className="max-w-sm mx-auto">
+          {/* Round indicator */}
+          <div className="text-center mb-1">
+            <span className="text-cyan-400 text-xs font-semibold uppercase tracking-wider">
+              Round {currentRound} / {maxRounds}
+            </span>
+          </div>
+
           {/* Timer */}
           <div className="text-center mb-3">
             <div className={`text-7xl font-bold font-mono ${timerClass}`}>
@@ -165,7 +188,7 @@ export default function StudentView({
           <div className="w-full bg-gray-800 rounded-full h-2 mb-6 overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-1000 shadow-lg ${progressColor}`}
-              style={{ width: `${progressPct}%` }}
+              style={{ width: progressPct + "%" }}
             />
           </div>
 
@@ -182,7 +205,7 @@ export default function StudentView({
             </div>
 
             <p className="text-sm text-gray-400">
-              Paarilised:{" "}
+              Partner:{" "}
               <strong className="text-gray-200">
                 {partnerNames.join(", ")}
               </strong>
@@ -246,6 +269,51 @@ export default function StudentView({
               </p>
               <p className="text-gray-500 text-sm mt-2">
                 Küsija kirjutab sinu vastuse üles.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // ---- ROUND END (find new partner) ----
+  if (status === "round_end" && pairInfo) {
+    const { partnerNames } = pairInfo;
+
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-950 p-4">
+        <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-sm text-center card-rgb">
+          <div className="text-5xl mb-4">🔄</div>
+          <h2 className="text-xl font-bold text-white mb-2">
+            Round {currentRound - 1} läbi!
+          </h2>
+          <p className="text-gray-400 mb-4">Sinu uus partner on:</p>
+          <div className="bg-gray-800 border border-cyan-500/30 rounded-xl p-4 mb-6">
+            <p className="text-2xl font-bold text-cyan-300 timer-rgb">
+              {partnerNames.join(", ")}
+            </p>
+          </div>
+          <p className="text-gray-500 text-sm mb-6">
+            Otsi oma uus partner klassist üles!
+          </p>
+
+          {!markedReady ? (
+            <button
+              onClick={() => {
+                markReady();
+                setMarkedReady(true);
+              }}
+              className="w-full bg-green-600 text-white text-lg font-semibold py-4 rounded-xl hover:bg-green-500 transition shadow-lg shadow-green-600/30"
+            >
+              ✅ Alusta uut roundi
+            </button>
+          ) : (
+            <div className="text-center">
+              <div className="text-4xl mb-2 animate-bounce">⏳</div>
+              <p className="text-green-300 font-medium">Oled valmis!</p>
+              <p className="text-gray-500 text-sm mt-1">
+                Ootame teisi mängijaid...
               </p>
             </div>
           )}
