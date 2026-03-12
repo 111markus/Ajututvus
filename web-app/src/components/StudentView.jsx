@@ -1,160 +1,164 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function StudentView({
-  user,
   roomCode,
   roomData,
   timerValue,
   joinRoom,
+  leaveRoom,
   submitAnswer,
   markReady,
-  leaveRoom,
-  getMyPairInfo,
   error,
-  setError,
+  myUid,
+  goBack,
 }) {
-  const [codeInput, setCodeInput] = useState("");
   const [nameInput, setNameInput] = useState("");
+  const [codeInput, setCodeInput] = useState("");
   const [answerInput, setAnswerInput] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [markedReady, setMarkedReady] = useState(false);
+  const [ready, setReady] = useState(false);
 
-  const status = roomData?.status;
-  const pairInfo = getMyPairInfo ? getMyPairInfo() : null;
-  const currentQ = roomData?.questions?.[roomData?.currentQuestionIndex || 0];
-  const currentQIdx = roomData?.currentQuestionIndex || 0;
-  const totalQ = roomData?.totalQuestions || 6;
-  const currentRound = roomData?.currentRound || 1;
-  const maxRounds = roomData?.totalRounds || 1;
-
-  // Reset submitted state when question changes
-  useEffect(() => {
-    setSubmitted(false);
-    setAnswerInput("");
-  }, [currentQIdx]);
-
-  // Reset markedReady when round changes
-  useEffect(() => {
-    setMarkedReady(false);
-  }, [currentRound]);
-
-  // Timer display classes
-  let timerClass = "timer-rgb";
-  if (timerValue <= 5) timerClass = "timer-urgent";
-
-  // Progress bar width
-  const progressPct = Math.max(0, (timerValue / 30) * 100);
-  let progressColor = "bg-green-500 shadow-green-500/50";
-  if (timerValue <= 10) progressColor = "bg-yellow-500 shadow-yellow-500/50";
-  if (timerValue <= 5) progressColor = "bg-red-500 shadow-red-500/50";
-
-  // ---- JOIN SCREEN ----
+  // ---- Join screen ----
   if (!roomCode) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-950 p-4">
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-sm card-rgb">
-          <h1 className="text-3xl font-bold text-center text-white mb-2">
-            🎮 Ajututvus
-          </h1>
-          <p className="text-gray-400 text-center mb-6">Liitu mänguga</p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-50 via-slate-50 to-indigo-50 p-4">
+        <div className="glass rounded-3xl shadow-sm p-8 w-full max-w-md fade-in">
+          <div className="text-center mb-6">
+            <div className="text-4xl mb-2">🃏</div>
+            <h1 className="text-2xl font-bold text-slate-800 mb-1">Liitu mänguga</h1>
+            <p className="text-slate-500 text-sm">Sisesta oma nimi ja toa kood</p>
+          </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 mb-6">
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">
-                Sinu nimi
-              </label>
+              <label className="block text-sm font-medium text-slate-600 mb-1">Sinu nimi</label>
               <input
                 type="text"
-                placeholder="Sisesta oma nimi"
+                placeholder="nt. Mari"
                 value={nameInput}
                 onChange={(e) => setNameInput(e.target.value)}
-                className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
+                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-800 placeholder-slate-400 focus:border-violet-400 focus:ring-2 focus:ring-violet-100 transition outline-none"
               />
             </div>
-
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">
-                Toa kood
-              </label>
+              <label className="block text-sm font-medium text-slate-600 mb-1">Toa kood</label>
               <input
-                type="tel"
+                type="text"
                 inputMode="numeric"
                 pattern="[0-9]*"
-                placeholder="Nt: 4821"
-                value={codeInput}
-                onChange={(e) => {
-                  setCodeInput(e.target.value.replace(/[^0-9]/g, ""));
-                  setError(null);
-                }}
+                placeholder="nt. 1234"
                 maxLength={4}
-                className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-3 text-2xl text-center font-mono tracking-widest focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-600"
+                value={codeInput}
+                onChange={(e) => setCodeInput(e.target.value.replace(/\D/g, "").slice(0, 4))}
+                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-center text-2xl font-mono font-bold tracking-widest text-slate-800 placeholder-slate-400 focus:border-violet-400 focus:ring-2 focus:ring-violet-100 transition outline-none"
               />
             </div>
-
-            <button
-              onClick={() => {
-                if (!nameInput.trim()) {
-                  setError("Palun sisesta oma nimi!");
-                  return;
-                }
-                if (codeInput.length !== 4) {
-                  setError("Kood peab olema 4 numbrit!");
-                  return;
-                }
-                joinRoom(codeInput, nameInput);
-              }}
-              className="w-full bg-purple-600 text-white text-lg font-semibold py-3 rounded-xl hover:bg-purple-500 transition shadow-lg shadow-purple-600/30"
-            >
-              Liitu
-            </button>
-
-            <button
-              onClick={leaveRoom}
-              className="w-full text-gray-500 text-sm underline hover:text-gray-300"
-            >
-              ← Tagasi
-            </button>
-
-            {error && (
-              <p className="text-red-400 text-sm text-center">{error}</p>
-            )}
           </div>
+
+          <button
+            onClick={() => {
+              if (nameInput.trim() && codeInput.length === 4) {
+                joinRoom(codeInput, nameInput.trim());
+              }
+            }}
+            disabled={!nameInput.trim() || codeInput.length !== 4}
+            className={`w-full text-lg font-semibold py-3.5 rounded-xl transition-all duration-200 mb-3 ${
+              nameInput.trim() && codeInput.length === 4
+                ? "bg-violet-500 text-white hover:bg-violet-600 hover:scale-105 active:scale-95 shadow-md shadow-violet-200"
+                : "bg-slate-200 text-slate-400 cursor-not-allowed"
+            }`}
+          >
+            Liitu
+          </button>
+          <button
+            onClick={goBack}
+            className="w-full text-slate-400 text-sm font-medium hover:text-slate-600 transition py-2"
+          >
+            ← Tagasi
+          </button>
+          {error && <p className="mt-4 text-red-500 text-center text-sm font-medium">{error}</p>}
         </div>
       </div>
     );
   }
 
-  // ---- LOBBY (waiting for GM to start) ----
-  if (status === "lobby") {
-    const players = roomData?.players ? Object.values(roomData.players) : [];
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-950 p-4">
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-sm text-center">
-          <div className="text-5xl mb-4 animate-bounce">⏳</div>
-          <h2 className="text-2xl font-bold text-white mb-2">Ootame...</h2>
-          <p className="text-gray-400 mb-6">Gamemaster alustab mängu peagi</p>
+  const status = roomData?.status || "lobby";
+  const players = roomData?.players ? Object.entries(roomData.players) : [];
+  const currentQ = roomData?.questions?.[roomData?.currentQuestionIndex || 0];
+  const totalQ = roomData?.totalQuestions || 6;
+  const currentQIdx = (roomData?.currentQuestionIndex || 0) + 1;
+  const pairs = roomData?.pairs ? Object.entries(roomData.pairs) : [];
+  const currentRound = roomData?.currentRound || 1;
+  const maxRounds = roomData?.totalRounds || 1;
 
-          <div className="bg-gray-800 rounded-xl p-4 mb-4">
-            <p className="text-sm text-gray-500 mb-2">
-              Toas on {players.length} mängijat:
+  // Find my pair and role
+  let myPair = null;
+  let myRole = null;
+  let partnerName = null;
+  for (const [, pair] of pairs) {
+    const members = pair.members || {};
+    if (members[myUid]) {
+      myPair = pair;
+      myRole = members[myUid].role;
+      for (const [uid, m] of Object.entries(members)) {
+        if (uid !== myUid) partnerName = m.name;
+      }
+      break;
+    }
+  }
+
+  // Timer aura class
+  const timerAura = timerValue <= 10 ? "timer-aura timer-aura-warm" : "timer-aura";
+  const timerColor = timerValue <= 5 ? "text-orange-500" : timerValue <= 10 ? "text-amber-500" : "text-violet-600";
+
+  // Progress bar
+  const progress = (currentQIdx / totalQ) * 100;
+  const progressColor =
+    progress < 50 ? "bg-violet-400" : progress < 80 ? "bg-indigo-400" : "bg-emerald-400";
+
+  // Reset submitted state when question index changes
+  const questionIndex = roomData?.currentQuestionIndex || 0;
+
+  // ---- LOBBY ----
+  if (status === "lobby") {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-slate-50 to-indigo-50 p-4">
+        <div className="max-w-md mx-auto text-center">
+          <div className="glass rounded-3xl shadow-sm p-8 mb-6 fade-in">
+            <div className="text-4xl mb-3">⏳</div>
+            <h2 className="text-xl font-bold text-slate-800 mb-2">Ootame alustamist...</h2>
+            <p className="text-slate-500 text-sm mb-4">
+              Tuba <span className="font-mono font-bold text-violet-500">{roomCode}</span>
             </p>
-            <div className="flex flex-wrap justify-center gap-2">
-              {players.map((p, i) => (
-                <span
-                  key={i}
-                  className="bg-purple-500/20 text-purple-300 border border-purple-500/30 px-3 py-1 rounded-full text-sm font-medium"
+            <p className="text-indigo-400 text-xs font-medium">
+              {maxRounds} {maxRounds === 1 ? "round" : "roundi"} × 6 küsimust
+            </p>
+          </div>
+
+          <div className="glass rounded-3xl shadow-sm p-6 mb-6">
+            <h3 className="text-lg font-bold text-slate-800 mb-3">
+              Mängijad ({players.length})
+            </h3>
+            <div className="grid grid-cols-2 gap-3">
+              {players.map(([uid, player]) => (
+                <div
+                  key={uid}
+                  className={`bg-white rounded-2xl p-3 text-center shadow-sm border ${
+                    uid === myUid ? "border-violet-300 ring-2 ring-violet-100" : "border-slate-100"
+                  }`}
                 >
-                  {p.name}
-                </span>
+                  <span className="text-2xl">{uid === myUid ? "🙋" : "👤"}</span>
+                  <p className="font-medium text-slate-700 mt-1 text-sm">{player.name}</p>
+                </div>
               ))}
             </div>
           </div>
 
           <button
             onClick={leaveRoom}
-            className="text-red-400 text-sm underline hover:text-red-300"
+            className="text-slate-400 text-sm font-medium hover:text-slate-600 transition"
           >
-            ← Tagasi (lahku toast)
+            ← Lahku toast
           </button>
         </div>
       </div>
@@ -162,113 +166,105 @@ export default function StudentView({
   }
 
   // ---- PLAYING ----
-  if (status === "playing" && pairInfo) {
-    const { myRole, partnerNames, pairKey } = pairInfo;
-    const isKysija = myRole === "kysija";
-
+  if (status === "playing") {
     return (
-      <div className="min-h-screen bg-gray-950 p-4">
-        <div className="max-w-sm mx-auto">
-          {/* Round indicator */}
-          <div className="text-center mb-1">
-            <span className="text-cyan-400 text-xs font-semibold uppercase tracking-wider">
+      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-slate-50 to-indigo-50 p-4">
+        <div className="max-w-lg mx-auto">
+          {/* Round */}
+          <div className="text-center mb-2">
+            <span className="text-violet-400 text-sm font-semibold uppercase tracking-wider">
               Round {currentRound} / {maxRounds}
             </span>
           </div>
 
           {/* Timer */}
-          <div className="text-center mb-3">
-            <div className={`text-7xl font-bold font-mono ${timerClass}`}>
-              {timerValue}
+          <div className="text-center mb-6">
+            <div className={timerAura}>
+              <div className={`text-6xl font-extrabold font-mono ${timerColor} transition-colors duration-700`}>
+                {timerValue}
+              </div>
             </div>
-            <p className="text-gray-500 text-xs mt-1">sekundit</p>
+            <p className="text-slate-400 text-xs mt-2">sekundit</p>
           </div>
 
           {/* Progress bar */}
-          <div className="w-full bg-gray-800 rounded-full h-2 mb-6 overflow-hidden">
+          <div className="w-full bg-slate-200 rounded-full h-2 mb-6 overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-1000 shadow-lg ${progressColor}`}
-              style={{ width: progressPct + "%" }}
+              className={`h-full rounded-full ${progressColor} transition-all duration-700`}
+              style={{ width: progress + "%" }}
             />
           </div>
 
-          {/* Role badge */}
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-xl p-5 mb-4 text-center fade-in">
-            <div
-              className={`inline-block px-4 py-2 rounded-full text-sm font-bold mb-3 ${
-                isKysija
-                  ? "bg-yellow-500/20 text-yellow-300 border border-yellow-500/40"
-                  : "bg-purple-500/20 text-purple-300 border border-purple-500/40"
+          {/* Partner & Role */}
+          <div className="glass rounded-3xl shadow-sm p-6 mb-4 text-center">
+            <p className="text-slate-400 text-xs uppercase tracking-widest mb-2">Sinu partner</p>
+            <p className="text-xl font-bold text-slate-800 mb-3">{partnerName || "..."}</p>
+            <span
+              className={`inline-block px-4 py-1.5 rounded-full text-sm font-bold ${
+                myRole === "kysija"
+                  ? "bg-amber-100 text-amber-700 border border-amber-200"
+                  : "bg-violet-100 text-violet-700 border border-violet-200"
               }`}
             >
-              {isKysija ? "❓ Sina oled KÜSIJA" : "💬 Sina oled VASTAJA"}
-            </div>
-
-            <p className="text-sm text-gray-400">
-              Partner:{" "}
-              <strong className="text-gray-200">
-                {partnerNames.join(", ")}
-              </strong>
-            </p>
+              {myRole === "kysija" ? "❓ Sina küsid" : "💬 Sina vastad"}
+            </span>
           </div>
 
-          {/* Question card */}
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-xl p-6 mb-4 card-rgb fade-in">
-            <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">
-              Küsimus {currentQIdx + 1} / {totalQ}
+          {/* Question */}
+          <div className="glass rounded-3xl shadow-sm p-6 mb-4 text-center fade-in" key={questionIndex}>
+            <p className="text-xs text-slate-400 mb-2 uppercase tracking-widest font-semibold">
+              Küsimus {currentQIdx} / {totalQ}
             </p>
-            <p className="text-lg font-semibold text-white leading-relaxed">
-              {currentQ}
-            </p>
+            <p className="text-lg font-semibold text-slate-800 leading-relaxed">{currentQ}</p>
           </div>
 
-          {/* Action area - only Küsija submits */}
-          {isKysija && (
-            <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-xl p-6 fade-in">
-              {!submitted ? (
-                <>
-                  <label className="block text-sm font-medium text-gray-400 mb-2">
-                    Kirjuta vastaja vastus lühidalt:
+          {/* Answer input (for kysija) */}
+          {myRole === "kysija" && (
+            <div className="glass rounded-3xl shadow-sm p-6">
+              {submitted ? (
+                <div className="text-center">
+                  <div className="text-3xl mb-2">✅</div>
+                  <p className="text-emerald-600 font-medium">Vastus salvestatud!</p>
+                </div>
+              ) : (
+                <div>
+                  <label className="block text-sm font-medium text-slate-600 mb-2">
+                    Kirjuta partneri vastus üles
                   </label>
                   <textarea
+                    rows={2}
+                    placeholder="Partneri vastus..."
                     value={answerInput}
                     onChange={(e) => setAnswerInput(e.target.value)}
-                    placeholder="Kirjuta vastus siia..."
-                    rows={3}
-                    className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-green-500 resize-none mb-3 placeholder-gray-500"
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-800 placeholder-slate-400 focus:border-violet-400 focus:ring-2 focus:ring-violet-100 transition outline-none resize-none mb-3"
                   />
                   <button
-                    onClick={async () => {
-                      if (!answerInput.trim()) return;
-                      await submitAnswer(pairKey, answerInput.trim());
-                      setSubmitted(true);
+                    onClick={() => {
+                      if (answerInput.trim()) {
+                        submitAnswer(answerInput.trim());
+                        setAnswerInput("");
+                        setSubmitted(true);
+                        setTimeout(() => setSubmitted(false), 3000);
+                      }
                     }}
-                    className="w-full bg-green-600 text-white font-semibold py-3 rounded-xl hover:bg-green-500 transition shadow-lg shadow-green-600/30"
+                    disabled={!answerInput.trim()}
+                    className={`w-full font-semibold py-3 rounded-xl transition-all duration-200 ${
+                      answerInput.trim()
+                        ? "bg-violet-500 text-white hover:bg-violet-600 hover:scale-105 active:scale-95 shadow-md shadow-violet-200"
+                        : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                    }`}
                   >
-                    Saada ✓
+                    Salvesta vastus
                   </button>
-                </>
-              ) : (
-                <div className="text-center py-4">
-                  <div className="text-4xl mb-2">✅</div>
-                  <p className="text-green-300 font-medium">Vastus saadetud!</p>
-                  <p className="text-gray-500 text-sm">
-                    Ootame järgmist küsimust...
-                  </p>
                 </div>
               )}
             </div>
           )}
 
-          {/* Vastaja sees instruction */}
-          {!isKysija && (
-            <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-xl p-6 text-center fade-in">
-              <div className="text-4xl mb-3">🗣️</div>
-              <p className="text-gray-200 font-medium">
-                Vasta suuliselt küsijale!
-              </p>
-              <p className="text-gray-500 text-sm mt-2">
-                Küsija kirjutab sinu vastuse üles.
+          {myRole === "vastaja" && (
+            <div className="glass rounded-3xl shadow-sm p-6 text-center">
+              <p className="text-slate-500 text-sm">
+                Vasta partnerile suuliselt 💬
               </p>
             </div>
           )}
@@ -277,45 +273,52 @@ export default function StudentView({
     );
   }
 
-  // ---- ROUND END (find new partner) ----
-  if (status === "round_end" && pairInfo) {
-    const { partnerNames } = pairInfo;
+  // ---- ROUND END ----
+  if (status === "round_end") {
+    // Find new partner
+    let newPartnerName = null;
+    for (const [, pair] of pairs) {
+      const members = pair.members || {};
+      if (members[myUid]) {
+        for (const [uid, m] of Object.entries(members)) {
+          if (uid !== myUid) newPartnerName = m.name;
+        }
+        break;
+      }
+    }
 
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-950 p-4">
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-sm text-center card-rgb">
-          <div className="text-5xl mb-4">🔄</div>
-          <h2 className="text-xl font-bold text-white mb-2">
-            Round {currentRound - 1} läbi!
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-50 via-slate-50 to-indigo-50 p-4">
+        <div className="glass rounded-3xl shadow-sm p-8 w-full max-w-md text-center fade-in">
+          <div className="text-5xl mb-4 float">🔄</div>
+          <h2 className="text-2xl font-bold text-slate-800 mb-2">
+            Round {currentRound - 1} lõppes!
           </h2>
-          <p className="text-gray-400 mb-4">Sinu uus partner on:</p>
-          <div className="bg-gray-800 border border-cyan-500/30 rounded-xl p-4 mb-6">
-            <p className="text-2xl font-bold text-cyan-300 timer-rgb">
-              {partnerNames.join(", ")}
-            </p>
-          </div>
-          <p className="text-gray-500 text-sm mb-6">
-            Otsi oma uus partner klassist üles!
-          </p>
+          <p className="text-slate-500 text-sm mb-6">Otsi üles oma uus partner</p>
 
-          {!markedReady ? (
+          {newPartnerName && (
+            <div className="partner-glow rounded-2xl p-6 mb-6">
+              <p className="text-xs text-violet-400 uppercase tracking-widest mb-2 font-semibold">
+                Sinu uus partner on
+              </p>
+              <p className="text-3xl font-extrabold text-violet-600">{newPartnerName}</p>
+            </div>
+          )}
+
+          {ready ? (
+            <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-200">
+              <p className="text-emerald-600 font-semibold">✅ Oled valmis! Oota teisi...</p>
+            </div>
+          ) : (
             <button
               onClick={() => {
                 markReady();
-                setMarkedReady(true);
+                setReady(true);
               }}
-              className="w-full bg-green-600 text-white text-lg font-semibold py-4 rounded-xl hover:bg-green-500 transition shadow-lg shadow-green-600/30"
+              className="w-full bg-emerald-500 text-white text-lg font-semibold py-4 rounded-2xl hover:bg-emerald-600 hover:scale-105 active:scale-95 transition-all duration-200 shadow-md shadow-emerald-200"
             >
-              ✅ Alusta uut roundi
+              Alusta uut roundi ✅
             </button>
-          ) : (
-            <div className="text-center">
-              <div className="text-4xl mb-2 animate-bounce">⏳</div>
-              <p className="text-green-300 font-medium">Oled valmis!</p>
-              <p className="text-gray-500 text-sm mt-1">
-                Ootame teisi mängijaid...
-              </p>
-            </div>
           )}
         </div>
       </div>
@@ -323,28 +326,21 @@ export default function StudentView({
   }
 
   // ---- FINISHED ----
-  if (status === "finished") {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-950 p-4">
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-sm text-center card-rgb">
-          <div className="text-6xl mb-4">🎉</div>
-          <h2 className="text-2xl font-bold text-white mb-2">Mäng läbi!</h2>
-          <p className="text-gray-400 mb-6">Aitäh osalemise eest!</p>
-          <button
-            onClick={leaveRoom}
-            className="w-full bg-purple-600 text-white font-semibold py-3 rounded-xl hover:bg-purple-500 transition shadow-lg shadow-purple-600/30"
-          >
-            Tagasi algusesse
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Fallback / loading
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-950">
-      <div className="text-gray-400 text-xl">Laadimine...</div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-50 via-slate-50 to-indigo-50 p-4">
+      <div className="glass rounded-3xl shadow-sm p-8 w-full max-w-md text-center fade-in">
+        <div className="text-6xl mb-4 float">🎉</div>
+        <h2 className="text-2xl font-bold text-slate-800 mb-2">Mäng läbi!</h2>
+        <p className="text-slate-500 mb-6">
+          {maxRounds} {maxRounds === 1 ? "round" : "roundi"} mängitud. Aitäh osalemise eest!
+        </p>
+        <button
+          onClick={leaveRoom}
+          className="w-full bg-violet-500 text-white font-semibold py-3 px-6 rounded-2xl hover:bg-violet-600 hover:scale-105 active:scale-95 transition-all duration-200 shadow-md shadow-violet-200"
+        >
+          Tagasi algusesse
+        </button>
+      </div>
     </div>
   );
 }

@@ -1,106 +1,128 @@
 <!doctype html>
-<html lang="et" class="dark">
+<html lang="et">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ajututvus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
-        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+            },
+          },
+        },
       };
     </script>
     <style>
-      @keyframes rgb-glow {
-        0% {
-          box-shadow:
-            0 0 15px #ff0000,
-            0 0 30px #ff000066;
-          border-color: #ff0000;
-        }
-        33% {
-          box-shadow:
-            0 0 15px #00ff00,
-            0 0 30px #00ff0066;
-          border-color: #00ff00;
-        }
-        66% {
-          box-shadow:
-            0 0 15px #0088ff,
-            0 0 30px #0088ff66;
-          border-color: #0088ff;
-        }
-        100% {
-          box-shadow:
-            0 0 15px #ff0000,
-            0 0 30px #ff000066;
-          border-color: #ff0000;
-        }
+      body {
+        font-family: 'Inter', system-ui, sans-serif;
       }
-      @keyframes rgb-text {
-        0% {
-          color: #ff4444;
-          text-shadow: 0 0 20px #ff444488;
-        }
-        33% {
-          color: #44ff44;
-          text-shadow: 0 0 20px #44ff4488;
-        }
-        66% {
-          color: #4488ff;
-          text-shadow: 0 0 20px #4488ff88;
-        }
-        100% {
-          color: #ff4444;
-          text-shadow: 0 0 20px #ff444488;
-        }
+
+      /* Glassmorphism card */
+      .glass {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
       }
-      @keyframes urgent-pulse {
-        0% {
-          color: #ff0000;
-          text-shadow: 0 0 30px #ff0000;
-          transform: scale(1);
-        }
-        50% {
-          color: #ff4444;
-          text-shadow:
-            0 0 50px #ff0000,
-            0 0 80px #ff000066;
-          transform: scale(1.1);
-        }
-        100% {
-          color: #ff0000;
-          text-shadow: 0 0 30px #ff0000;
-          transform: scale(1);
-        }
+
+      /* Aura timer ring */
+      .timer-aura {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
       }
-      .timer-rgb {
-        animation: rgb-text 3s linear infinite;
+      .timer-aura::before {
+        content: '';
+        position: absolute;
+        inset: -12px;
+        border-radius: 50%;
+        background: conic-gradient(
+          from 0deg,
+          #f9a8d4,
+          #c4b5fd,
+          #93c5fd,
+          #a5f3fc,
+          #93c5fd,
+          #c4b5fd,
+          #f9a8d4
+        );
+        opacity: 0.5;
+        filter: blur(18px);
+        animation: aura-spin 4s linear infinite;
+        z-index: 0;
       }
-      .timer-urgent {
-        animation: urgent-pulse 0.5s ease-in-out infinite;
+      .timer-aura > * {
+        position: relative;
+        z-index: 1;
       }
-      .card-rgb {
-        animation: rgb-glow 3s linear infinite;
-        border-width: 2px;
+
+      /* Warm aura when time is low */
+      .timer-aura-warm::before {
+        background: conic-gradient(
+          from 0deg,
+          #fdba74,
+          #fb923c,
+          #f97316,
+          #fdba74,
+          #fbbf24,
+          #fb923c,
+          #fdba74
+        );
+        opacity: 0.6;
+        animation: aura-spin 2s linear infinite;
       }
+
+      @keyframes aura-spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      @keyframes aura-pulse {
+        0%, 100% { opacity: 0.4; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(1.05); }
+      }
+
       @keyframes fade-in {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
       }
       .fade-in {
         animation: fade-in 0.4s ease-out;
       }
+
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-6px); }
+      }
+      .float {
+        animation: float 3s ease-in-out infinite;
+      }
+
+      /* Soft gradient text */
+      .text-gradient {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* Pastel partner highlight */
+      .partner-glow {
+        background: linear-gradient(135deg, #dbeafe, #e0e7ff, #ede9fe);
+        border: 2px solid #c7d2fe;
+      }
     </style>
   </head>
-  <body class="bg-gray-950 min-h-screen">
+  <body class="bg-slate-50 min-h-screen">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

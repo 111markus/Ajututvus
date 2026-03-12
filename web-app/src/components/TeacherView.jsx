@@ -16,16 +16,17 @@ export default function TeacherView({
   // ---- Room not created yet ----
   if (!roomCode) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-950 p-4">
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-md text-center card-rgb">
-          <h1 className="text-3xl font-bold text-white mb-2">
-            🎮 Gamemaster paneel
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-slate-50 to-purple-50 p-4">
+        <div className="glass rounded-3xl shadow-sm p-8 w-full max-w-md text-center fade-in">
+          <div className="text-4xl mb-2">🎮</div>
+          <h1 className="text-2xl font-bold text-slate-800 mb-1">
+            Gamemaster paneel
           </h1>
-          <p className="text-gray-400 mb-6">Loo uus mängutuba</p>
+          <p className="text-slate-500 text-sm mb-8">Loo uus mängutuba</p>
 
           {/* Rounds selector */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-400 mb-2">
+          <div className="mb-8">
+            <label className="block text-sm font-medium text-slate-600 mb-3">
               Roundide arv
             </label>
             <div className="flex justify-center gap-2">
@@ -33,10 +34,10 @@ export default function TeacherView({
                 <button
                   key={n}
                   onClick={() => setTotalRounds(n)}
-                  className={`px-5 py-2 rounded-xl font-bold text-lg transition ${
+                  className={`px-5 py-2.5 rounded-xl font-bold text-lg transition-all duration-200 hover:scale-105 active:scale-95 ${
                     totalRounds === n
-                      ? "bg-cyan-600 text-white shadow-lg shadow-cyan-600/30"
-                      : "bg-gray-800 text-gray-400 border border-gray-700 hover:bg-gray-700"
+                      ? "bg-indigo-500 text-white shadow-md shadow-indigo-200"
+                      : "bg-white text-slate-500 border border-slate-200 hover:border-indigo-300 shadow-sm"
                   }`}
                 >
                   {n}
@@ -47,17 +48,17 @@ export default function TeacherView({
 
           <button
             onClick={createRoom}
-            className="w-full bg-cyan-600 text-white text-lg font-semibold py-3 px-6 rounded-xl hover:bg-cyan-500 transition shadow-lg shadow-cyan-600/30 mb-4"
+            className="w-full bg-indigo-500 text-white text-lg font-semibold py-3.5 rounded-xl hover:bg-indigo-600 hover:scale-105 active:scale-95 transition-all duration-200 shadow-md shadow-indigo-200 mb-4"
           >
             Loo uus tuba
           </button>
           <button
             onClick={teacherLogout}
-            className="text-gray-500 text-sm underline hover:text-gray-300"
+            className="text-slate-400 text-sm font-medium hover:text-slate-600 transition"
           >
             Logi välja
           </button>
-          {error && <p className="mt-4 text-red-400 text-sm">{error}</p>}
+          {error && <p className="mt-4 text-red-500 text-sm font-medium">{error}</p>}
         </div>
       </div>
     );
@@ -76,84 +77,72 @@ export default function TeacherView({
   const readyCount = Object.keys(readyPlayers).length;
   const totalPlayers = players.length;
 
-  // Timer display classes
-  let timerClass = "timer-rgb";
-  if (timerValue <= 5) timerClass = "timer-urgent";
+  // Timer aura class
+  const timerAura = timerValue <= 10 ? "timer-aura timer-aura-warm" : "timer-aura";
+  const timerColor = timerValue <= 5 ? "text-orange-500" : timerValue <= 10 ? "text-amber-500" : "text-indigo-600";
 
   // ---- LOBBY ----
   if (status === "lobby") {
     return (
-      <div className="min-h-screen bg-gray-950 p-4">
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-slate-50 to-purple-50 p-4">
         <div className="max-w-2xl mx-auto">
-          {/* Header with logout */}
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-white text-lg font-semibold">🎮 Gamemaster</h2>
+            <h2 className="text-slate-800 text-lg font-semibold">🎮 Gamemaster</h2>
             <button
               onClick={teacherLogout}
-              className="text-gray-500 text-sm underline hover:text-gray-300"
+              className="text-slate-400 text-sm font-medium hover:text-slate-600 transition"
             >
               Logi välja
             </button>
           </div>
 
-          {/* Room code display */}
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-8 text-center mb-6 card-rgb">
-            <h2 className="text-sm text-gray-400 mb-2 uppercase tracking-wider">
-              Toa kood
-            </h2>
-            <div className="text-6xl font-mono font-bold tracking-widest text-white timer-rgb mb-4">
+          {/* Room code */}
+          <div className="glass rounded-3xl shadow-sm p-8 text-center mb-6 fade-in">
+            <p className="text-xs text-slate-500 mb-2 uppercase tracking-widest font-semibold">Toa kood</p>
+            <div className="text-6xl font-mono font-extrabold tracking-widest text-gradient mb-3">
               {roomCode}
             </div>
-            <p className="text-gray-500 text-sm">Jaga seda koodi mängijatega</p>
-            <p className="text-cyan-400 text-xs mt-2">
+            <p className="text-slate-400 text-sm">Jaga seda koodi mängijatega</p>
+            <p className="text-indigo-400 text-xs mt-2 font-medium">
               {maxRounds} {maxRounds === 1 ? "round" : "roundi"} × 6 küsimust
             </p>
           </div>
 
-          {/* Player list */}
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-xl p-6 mb-6">
-            <h3 className="text-lg font-bold text-white mb-4">
+          {/* Players */}
+          <div className="glass rounded-3xl shadow-sm p-6 mb-6">
+            <h3 className="text-lg font-bold text-slate-800 mb-4">
               Mängijad ({players.length})
             </h3>
             {players.length === 0 ? (
-              <p className="text-gray-500 text-center py-4">
-                Ootame mängijaid...
-              </p>
+              <p className="text-slate-400 text-center py-4">Ootame mängijaid...</p>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {players.map(([uid, player]) => (
-                  <div
-                    key={uid}
-                    className="bg-gray-800 border border-gray-700 rounded-xl p-3 text-center"
-                  >
+                  <div key={uid} className="bg-white rounded-2xl p-3 text-center shadow-sm border border-slate-100">
                     <span className="text-2xl">👤</span>
-                    <p className="font-medium text-gray-200 mt-1 text-sm">
-                      {player.name}
-                    </p>
+                    <p className="font-medium text-slate-700 mt-1 text-sm">{player.name}</p>
                   </div>
                 ))}
               </div>
             )}
           </div>
 
-          {/* Controls - no more randomize button, auto-pairs on start */}
-          <div className="space-y-3">
-            <button
-              onClick={startGame}
-              disabled={players.length < 2}
-              className={`w-full text-lg font-semibold py-4 px-6 rounded-xl transition ${
-                players.length >= 2
-                  ? "bg-green-600 text-white hover:bg-green-500 shadow-lg shadow-green-600/30"
-                  : "bg-gray-800 text-gray-600 cursor-not-allowed"
-              }`}
-            >
-              {players.length < 2
-                ? ("Vaja vähemalt 2 mängijat (praegu " + players.length + ")")
-                : ("🚀 Alusta mängu (" + players.length + " mängijat)")}
-            </button>
-          </div>
+          {/* Start */}
+          <button
+            onClick={startGame}
+            disabled={players.length < 2}
+            className={`w-full text-lg font-semibold py-4 px-6 rounded-2xl transition-all duration-200 ${
+              players.length >= 2
+                ? "bg-emerald-500 text-white hover:bg-emerald-600 hover:scale-105 active:scale-95 shadow-md shadow-emerald-200"
+                : "bg-slate-200 text-slate-400 cursor-not-allowed"
+            }`}
+          >
+            {players.length < 2
+              ? ("Vaja vähemalt 2 mängijat (praegu " + players.length + ")")
+              : ("🚀 Alusta mängu (" + players.length + " mängijat)")}
+          </button>
 
-          {error && <p className="mt-4 text-red-400 text-center">{error}</p>}
+          {error && <p className="mt-4 text-red-500 text-center text-sm font-medium">{error}</p>}
         </div>
       </div>
     );
@@ -162,36 +151,38 @@ export default function TeacherView({
   // ---- PLAYING ----
   if (status === "playing") {
     return (
-      <div className="min-h-screen bg-gray-950 p-4">
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-slate-50 to-purple-50 p-4">
         <div className="max-w-3xl mx-auto">
-          {/* Round indicator */}
+          {/* Round */}
           <div className="text-center mb-2">
-            <span className="text-cyan-400 text-sm font-semibold uppercase tracking-wider">
+            <span className="text-indigo-400 text-sm font-semibold uppercase tracking-wider">
               Round {currentRound} / {maxRounds}
             </span>
           </div>
 
-          {/* Timer */}
-          <div className="text-center mb-6">
-            <div className={`text-7xl font-bold font-mono ${timerClass}`}>
-              {timerValue}
+          {/* Timer with aura */}
+          <div className="text-center mb-8">
+            <div className={timerAura}>
+              <div className={`text-7xl font-extrabold font-mono ${timerColor} transition-colors duration-700`}>
+                {timerValue}
+              </div>
             </div>
-            <p className="text-gray-500 text-sm mt-1">sekundit</p>
+            <p className="text-slate-400 text-sm mt-3">sekundit</p>
           </div>
 
-          {/* Question display */}
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-8 text-center mb-6 fade-in">
-            <div className="text-sm text-gray-500 mb-3 uppercase tracking-wider">
+          {/* Question */}
+          <div className="glass rounded-3xl shadow-sm p-8 text-center mb-6 fade-in">
+            <p className="text-xs text-slate-400 mb-3 uppercase tracking-widest font-semibold">
               Küsimus {currentQIdx} / {totalQ}
-            </div>
-            <p className="text-xl sm:text-2xl font-semibold text-white leading-relaxed">
+            </p>
+            <p className="text-xl sm:text-2xl font-semibold text-slate-800 leading-relaxed">
               {currentQ}
             </p>
           </div>
 
-          {/* Pairs overview */}
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-xl p-6 mb-6">
-            <h3 className="text-lg font-bold text-white mb-4">Paarid</h3>
+          {/* Pairs */}
+          <div className="glass rounded-3xl shadow-sm p-6 mb-6">
+            <h3 className="text-lg font-bold text-slate-800 mb-4">Paarid</h3>
             <div className="grid gap-3">
               {pairs.map(([pairKey, pair]) => {
                 const members = Object.entries(pair.members || {});
@@ -199,20 +190,20 @@ export default function TeacherView({
                 return (
                   <div
                     key={pairKey}
-                    className={`border rounded-xl p-4 transition ${
+                    className={`rounded-2xl p-4 transition-all border ${
                       pairAnswer
-                        ? "border-green-500/50 bg-green-900/20"
-                        : "border-gray-700 bg-gray-800"
-                    }`}
+                        ? "border-emerald-200 bg-emerald-50"
+                        : "border-slate-100 bg-white"
+                    } shadow-sm`}
                   >
-                    <div className="flex flex-wrap gap-2 mb-2">
+                    <div className="flex flex-wrap gap-2 mb-1">
                       {members.map(([uid, m]) => (
                         <span
                           key={uid}
                           className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
                             m.role === "kysija"
-                              ? "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30"
-                              : "bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                              ? "bg-amber-100 text-amber-700 border border-amber-200"
+                              : "bg-violet-100 text-violet-700 border border-violet-200"
                           }`}
                         >
                           {m.role === "kysija" ? "❓" : "💬"} {m.name}
@@ -220,7 +211,7 @@ export default function TeacherView({
                       ))}
                     </div>
                     {pairAnswer && (
-                      <p className="text-sm text-green-300 mt-2 italic">
+                      <p className="text-sm text-emerald-600 mt-2 italic">
                         ✅ &quot;{pairAnswer.answer}&quot;
                       </p>
                     )}
@@ -231,16 +222,16 @@ export default function TeacherView({
           </div>
 
           {/* Controls */}
-          <div className="flex gap-4">
+          <div className="flex gap-3">
             <button
               onClick={nextQuestion}
-              className="flex-1 bg-cyan-600 text-white text-lg font-semibold py-3 px-6 rounded-xl hover:bg-cyan-500 transition shadow-lg shadow-cyan-600/30"
+              className="flex-1 bg-indigo-500 text-white text-lg font-semibold py-3 px-6 rounded-2xl hover:bg-indigo-600 hover:scale-105 active:scale-95 transition-all duration-200 shadow-md shadow-indigo-200"
             >
               Järgmine küsimus →
             </button>
             <button
               onClick={endGame}
-              className="bg-red-600 text-white font-semibold py-3 px-6 rounded-xl hover:bg-red-500 transition shadow-lg shadow-red-600/30"
+              className="bg-rose-500 text-white font-semibold py-3 px-6 rounded-2xl hover:bg-rose-600 hover:scale-105 active:scale-95 transition-all duration-200 shadow-md shadow-rose-200"
             >
               Lõpeta
             </button>
@@ -250,40 +241,36 @@ export default function TeacherView({
     );
   }
 
-  // ---- ROUND END (waiting for players to find new partners) ----
+  // ---- ROUND END ----
   if (status === "round_end") {
     return (
-      <div className="min-h-screen bg-gray-950 p-4">
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-slate-50 to-purple-50 p-4">
         <div className="max-w-2xl mx-auto text-center">
-          <div className="text-5xl mb-4">🔄</div>
-          <h2 className="text-2xl font-bold text-white mb-2">
+          <div className="text-5xl mb-4 float">🔄</div>
+          <h2 className="text-2xl font-bold text-slate-800 mb-2">
             Round {currentRound - 1} lõppes!
           </h2>
-          <p className="text-gray-400 mb-6">
+          <p className="text-slate-500 mb-6">
             Mängijad otsivad uut partnerit... ({readyCount}/{totalPlayers} valmis)
           </p>
 
-          {/* New pairs preview */}
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-xl p-6 mb-6">
-            <h3 className="text-lg font-bold text-white mb-4">Uued paarid (Round {currentRound})</h3>
+          <div className="glass rounded-3xl shadow-sm p-6 mb-6">
+            <h3 className="text-lg font-bold text-slate-800 mb-4">Uued paarid (Round {currentRound})</h3>
             <div className="grid gap-3">
               {pairs.map(([pairKey, pair]) => {
                 const members = Object.entries(pair.members || {});
                 return (
-                  <div
-                    key={pairKey}
-                    className="bg-gray-800 border border-gray-700 rounded-xl p-3"
-                  >
+                  <div key={pairKey} className="bg-white rounded-2xl p-3 shadow-sm border border-slate-100">
                     <div className="flex flex-wrap gap-2 justify-center">
                       {members.map(([uid, m]) => {
                         const isReady = readyPlayers[uid];
                         return (
                           <span
                             key={uid}
-                            className={`text-sm px-3 py-1 rounded-full ${
+                            className={`text-sm px-3 py-1 rounded-full font-medium ${
                               isReady
-                                ? "bg-green-500/20 text-green-300 border border-green-500/30"
-                                : "bg-gray-700 text-gray-300 border border-gray-600"
+                                ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
+                                : "bg-slate-100 text-slate-500 border border-slate-200"
                             }`}
                           >
                             {isReady ? "✅" : "⏳"} {m.name}
@@ -297,16 +284,13 @@ export default function TeacherView({
             </div>
           </div>
 
-          {/* GM can force start */}
           <button
             onClick={startNextRound}
-            className="w-full bg-green-600 text-white text-lg font-semibold py-4 rounded-xl hover:bg-green-500 transition shadow-lg shadow-green-600/30 mb-3"
+            className="w-full bg-emerald-500 text-white text-lg font-semibold py-4 rounded-2xl hover:bg-emerald-600 hover:scale-105 active:scale-95 transition-all duration-200 shadow-md shadow-emerald-200 mb-3"
           >
             🚀 Alusta Round {currentRound}
           </button>
-          <p className="text-gray-600 text-xs">
-            Vajuta kui kõik on uue partneri leidnud
-          </p>
+          <p className="text-slate-400 text-xs">Vajuta kui kõik on uue partneri leidnud</p>
         </div>
       </div>
     );
@@ -314,22 +298,22 @@ export default function TeacherView({
 
   // ---- FINISHED ----
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-950 p-4">
-      <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-md text-center card-rgb">
-        <div className="text-6xl mb-4">🎉</div>
-        <h2 className="text-2xl font-bold text-white mb-2">Mäng läbi!</h2>
-        <p className="text-gray-400 mb-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-slate-50 to-purple-50 p-4">
+      <div className="glass rounded-3xl shadow-sm p-8 w-full max-w-md text-center fade-in">
+        <div className="text-6xl mb-4 float">🎉</div>
+        <h2 className="text-2xl font-bold text-slate-800 mb-2">Mäng läbi!</h2>
+        <p className="text-slate-500 mb-6">
           {maxRounds} {maxRounds === 1 ? "round" : "roundi"} mängitud. Aitäh!
         </p>
         <button
           onClick={deleteRoom}
-          className="w-full bg-cyan-600 text-white font-semibold py-3 px-6 rounded-xl hover:bg-cyan-500 transition shadow-lg shadow-cyan-600/30 mb-3"
+          className="w-full bg-indigo-500 text-white font-semibold py-3 px-6 rounded-2xl hover:bg-indigo-600 hover:scale-105 active:scale-95 transition-all duration-200 shadow-md shadow-indigo-200 mb-3"
         >
           Loo uus mäng
         </button>
         <button
           onClick={teacherLogout}
-          className="text-gray-500 text-sm underline hover:text-gray-300"
+          className="text-slate-400 text-sm font-medium hover:text-slate-600 transition"
         >
           Logi välja
         </button>
