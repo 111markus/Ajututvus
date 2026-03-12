@@ -10,59 +10,52 @@ export default function TeacherLogin({ onLogin, onBack, error }) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-slate-50 to-purple-50 p-4">
-      <form
-        onSubmit={handleSubmit}
-        className="glass rounded-3xl shadow-sm p-8 w-full max-w-sm fade-in"
-      >
-        <div className="text-4xl text-center mb-2">🎮</div>
-        <h2 className="text-xl font-bold text-center text-slate-800 mb-6">
-          Gamemaster sisselogimine
-        </h2>
+    <div className="min-h-screen flex items-center justify-center bg-game p-4">
+      <form onSubmit={handleSubmit} className="neon-glass rounded-3xl glow-purple p-8 w-full max-w-sm fade-in">
+        <div className="text-4xl text-center mb-2">🔐</div>
+        <h2 className="text-xl font-bold text-center text-white mb-1">GAMEMASTER</h2>
+        <p className="text-center text-white/30 text-sm mb-8 uppercase tracking-widest">Sisselogimine</p>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1">
-              Kasutajanimi
-            </label>
+            <label className="block text-xs font-bold text-white/50 mb-2 uppercase tracking-wider">Kasutajanimi</label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Kasutajanimi"
-              className="w-full bg-white border border-slate-200 text-slate-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300 placeholder-slate-400 shadow-sm"
+              className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 placeholder-white/20 transition"
             />
           </div>
-
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1">
-              Parool
-            </label>
+            <label className="block text-xs font-bold text-white/50 mb-2 uppercase tracking-wider">Parool</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Parool"
-              className="w-full bg-white border border-slate-200 text-slate-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300 placeholder-slate-400 shadow-sm"
+              className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 placeholder-white/20 transition"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-indigo-500 text-white text-lg font-semibold py-3 rounded-xl hover:bg-indigo-600 hover:scale-105 active:scale-95 transition-all duration-200 shadow-md shadow-indigo-200"
+            className="btn-neon w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white text-lg font-bold py-3.5 rounded-xl glow-purple"
           >
-            Logi sisse
+            LOGI SISSE
           </button>
 
           <button
             type="button"
             onClick={onBack}
-            className="w-full text-slate-500 text-sm font-medium hover:text-slate-700 transition py-2"
+            className="w-full text-white/30 text-sm font-medium hover:text-white/60 transition py-2"
           >
             ← Tagasi
           </button>
 
-          {error && <p className="text-red-500 text-sm text-center font-medium">{error}</p>}
+          {error && (
+            <p className="text-red-400 text-center text-sm font-medium glow-red rounded-lg p-2">{error}</p>
+          )}
         </div>
       </form>
     </div>

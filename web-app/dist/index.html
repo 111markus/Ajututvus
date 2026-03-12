@@ -7,123 +7,219 @@
     <title>Ajututvus</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Inter', 'system-ui', 'sans-serif'],
+              sans: ['Space Grotesk', 'system-ui', 'sans-serif'],
             },
           },
         },
       };
     </script>
     <style>
-      body {
-        font-family: 'Inter', system-ui, sans-serif;
+      * { font-family: 'Space Grotesk', system-ui, sans-serif; }
+
+      /* ===== ANIMATED GRADIENT BACKGROUNDS ===== */
+      .bg-game {
+        background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a2e);
+        background-size: 400% 400%;
+        animation: gradient-bg 15s ease infinite;
+      }
+      .bg-asker {
+        background: linear-gradient(-45deg, #1a0a2e, #3d1c5c, #5c1a3b, #2e1065);
+        background-size: 400% 400%;
+        animation: gradient-bg 12s ease infinite;
+      }
+      .bg-answerer {
+        background: linear-gradient(-45deg, #0a1628, #0c2d48, #1a3a5c, #0e2439);
+        background-size: 400% 400%;
+        animation: gradient-bg 12s ease infinite;
+      }
+      @keyframes gradient-bg {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
       }
 
-      /* Glassmorphism card */
-      .glass {
-        background: rgba(255, 255, 255, 0.7);
+      /* ===== NEON GLASS ===== */
+      .neon-glass {
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .neon-glass-light {
+        background: rgba(255, 255, 255, 0.05);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.1);
       }
 
-      /* Aura timer ring */
-      .timer-aura {
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+      /* ===== NEON GLOW SHADOWS ===== */
+      .glow-purple {
+        box-shadow: 0 0 30px rgba(139, 92, 246, 0.3), 0 0 60px rgba(139, 92, 246, 0.1), inset 0 1px 0 rgba(255,255,255,0.1);
       }
-      .timer-aura::before {
-        content: '';
-        position: absolute;
-        inset: -12px;
-        border-radius: 50%;
-        background: conic-gradient(
-          from 0deg,
-          #f9a8d4,
-          #c4b5fd,
-          #93c5fd,
-          #a5f3fc,
-          #93c5fd,
-          #c4b5fd,
-          #f9a8d4
-        );
-        opacity: 0.5;
-        filter: blur(18px);
-        animation: aura-spin 4s linear infinite;
-        z-index: 0;
+      .glow-cyan {
+        box-shadow: 0 0 30px rgba(6, 182, 212, 0.3), 0 0 60px rgba(6, 182, 212, 0.1), inset 0 1px 0 rgba(255,255,255,0.1);
       }
-      .timer-aura > * {
-        position: relative;
-        z-index: 1;
+      .glow-pink {
+        box-shadow: 0 0 30px rgba(236, 72, 153, 0.3), 0 0 60px rgba(236, 72, 153, 0.1), inset 0 1px 0 rgba(255,255,255,0.1);
+      }
+      .glow-green {
+        box-shadow: 0 0 30px rgba(34, 197, 94, 0.3), 0 0 60px rgba(34, 197, 94, 0.1), inset 0 1px 0 rgba(255,255,255,0.1);
+      }
+      .glow-amber {
+        box-shadow: 0 0 30px rgba(245, 158, 11, 0.3), 0 0 60px rgba(245, 158, 11, 0.1);
+      }
+      .glow-red {
+        box-shadow: 0 0 30px rgba(239, 68, 68, 0.5), 0 0 60px rgba(239, 68, 68, 0.2);
       }
 
-      /* Warm aura when time is low */
-      .timer-aura-warm::before {
-        background: conic-gradient(
-          from 0deg,
-          #fdba74,
-          #fb923c,
-          #f97316,
-          #fdba74,
-          #fbbf24,
-          #fb923c,
-          #fdba74
-        );
-        opacity: 0.6;
-        animation: aura-spin 2s linear infinite;
+      /* ===== NEON TEXT ===== */
+      .text-neon-purple {
+        color: #c084fc;
+        text-shadow: 0 0 20px rgba(192, 132, 252, 0.5), 0 0 40px rgba(139, 92, 246, 0.3);
+      }
+      .text-neon-cyan {
+        color: #22d3ee;
+        text-shadow: 0 0 20px rgba(34, 211, 238, 0.5), 0 0 40px rgba(6, 182, 212, 0.3);
+      }
+      .text-neon-pink {
+        color: #f472b6;
+        text-shadow: 0 0 20px rgba(244, 114, 182, 0.5), 0 0 40px rgba(236, 72, 153, 0.3);
+      }
+      .text-neon-green {
+        color: #4ade80;
+        text-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
       }
 
-      @keyframes aura-spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-      }
-
-      @keyframes aura-pulse {
-        0%, 100% { opacity: 0.4; transform: scale(1); }
-        50% { opacity: 0.7; transform: scale(1.05); }
-      }
-
-      @keyframes fade-in {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      .fade-in {
-        animation: fade-in 0.4s ease-out;
-      }
-
-      @keyframes float {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-6px); }
-      }
-      .float {
-        animation: float 3s ease-in-out infinite;
-      }
-
-      /* Soft gradient text */
-      .text-gradient {
-        background: linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa);
+      /* ===== GRADIENT TEXT ===== */
+      .text-gradient-neon {
+        background: linear-gradient(135deg, #c084fc, #f472b6, #22d3ee);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
       }
 
-      /* Pastel partner highlight */
-      .partner-glow {
-        background: linear-gradient(135deg, #dbeafe, #e0e7ff, #ede9fe);
-        border: 2px solid #c7d2fe;
+      /* ===== TIMER ===== */
+      .timer-ring {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
       }
+      .timer-ring::before {
+        content: '';
+        position: absolute;
+        inset: -20px;
+        border-radius: 50%;
+        background: conic-gradient(from 0deg, #c084fc, #f472b6, #22d3ee, #c084fc);
+        opacity: 0.4;
+        filter: blur(25px);
+        animation: timer-spin 3s linear infinite;
+        z-index: 0;
+      }
+      .timer-ring > * { position: relative; z-index: 1; }
+
+      .timer-danger::before {
+        background: conic-gradient(from 0deg, #ef4444, #f59e0b, #ef4444, #dc2626);
+        opacity: 0.7;
+        filter: blur(30px);
+        animation: timer-spin 1s linear infinite, timer-flash 0.5s ease-in-out infinite;
+      }
+
+      @keyframes timer-spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      @keyframes timer-flash {
+        0%, 100% { opacity: 0.5; transform: rotate(0deg) scale(1); }
+        50% { opacity: 1; transform: rotate(180deg) scale(1.15); }
+      }
+
+      /* ===== PULSE ANIMATION ===== */
+      @keyframes mega-pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.05); opacity: 0.9; }
+      }
+      .mega-pulse { animation: mega-pulse 2s ease-in-out infinite; }
+
+      @keyframes role-pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.03); }
+      }
+      .role-pulse { animation: role-pulse 1.5s ease-in-out infinite; }
+
+      /* ===== FADE IN ===== */
+      @keyframes fade-in-up {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .fade-in { animation: fade-in-up 0.5s ease-out; }
+      .fade-in-delay { animation: fade-in-up 0.5s ease-out 0.2s both; }
+
+      /* ===== FLOAT ===== */
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-8px); }
+      }
+      .float { animation: float 3s ease-in-out infinite; }
+
+      /* ===== PARTNER REVEAL GLOW ===== */
+      .partner-reveal {
+        background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(236,72,153,0.2));
+        border: 2px solid rgba(192, 132, 252, 0.4);
+        box-shadow: 0 0 40px rgba(139, 92, 246, 0.3), 0 0 80px rgba(236, 72, 153, 0.15);
+        animation: partner-glow 2s ease-in-out infinite;
+      }
+      @keyframes partner-glow {
+        0%, 100% { box-shadow: 0 0 40px rgba(139,92,246,0.3), 0 0 80px rgba(236,72,153,0.15); }
+        50% { box-shadow: 0 0 60px rgba(139,92,246,0.5), 0 0 100px rgba(236,72,153,0.25); }
+      }
+
+      /* ===== BUTTON HOVER NEON ===== */
+      .btn-neon {
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      .btn-neon:hover {
+        transform: scale(1.05);
+        filter: brightness(1.1);
+      }
+      .btn-neon:active {
+        transform: scale(0.97);
+      }
+
+      /* ===== KICK BUTTON ===== */
+      .btn-kick {
+        transition: all 0.15s ease;
+      }
+      .btn-kick:hover {
+        background: rgba(239, 68, 68, 0.9);
+        box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+        transform: scale(1.1);
+      }
+
+      /* ===== ANSWERER PULSE TEXT ===== */
+      @keyframes answerer-text-pulse {
+        0%, 100% { opacity: 1; transform: scale(1); text-shadow: 0 0 30px rgba(34, 211, 238, 0.5); }
+        50% { opacity: 0.8; transform: scale(1.02); text-shadow: 0 0 60px rgba(34, 211, 238, 0.8), 0 0 100px rgba(6, 182, 212, 0.4); }
+      }
+      .answerer-pulse { animation: answerer-text-pulse 2s ease-in-out infinite; }
+
+      /* ===== SCROLLBAR ===== */
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
     </style>
-    <script type="module" crossorigin src="/veebiarendus/ajututvus/assets/index-BHDQB21x.js"></script>
+    <script type="module" crossorigin src="/veebiarendus/ajututvus/assets/index-Dj2Y7h4U.js"></script>
   </head>
-  <body class="bg-slate-50 min-h-screen">
+  <body class="bg-game min-h-screen overflow-x-hidden">
     <div id="root"></div>
   </body>
 </html>
