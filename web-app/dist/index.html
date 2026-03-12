@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="et" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/veebiarendus/Ajututvus/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ajututvus</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+      };
+    </script>
+    <style>
+      @keyframes rgb-glow {
+        0% {
+          box-shadow:
+            0 0 15px #ff0000,
+            0 0 30px #ff000066;
+          border-color: #ff0000;
+        }
+        33% {
+          box-shadow:
+            0 0 15px #00ff00,
+            0 0 30px #00ff0066;
+          border-color: #00ff00;
+        }
+        66% {
+          box-shadow:
+            0 0 15px #0088ff,
+            0 0 30px #0088ff66;
+          border-color: #0088ff;
+        }
+        100% {
+          box-shadow:
+            0 0 15px #ff0000,
+            0 0 30px #ff000066;
+          border-color: #ff0000;
+        }
+      }
+      @keyframes rgb-text {
+        0% {
+          color: #ff4444;
+          text-shadow: 0 0 20px #ff444488;
+        }
+        33% {
+          color: #44ff44;
+          text-shadow: 0 0 20px #44ff4488;
+        }
+        66% {
+          color: #4488ff;
+          text-shadow: 0 0 20px #4488ff88;
+        }
+        100% {
+          color: #ff4444;
+          text-shadow: 0 0 20px #ff444488;
+        }
+      }
+      @keyframes urgent-pulse {
+        0% {
+          color: #ff0000;
+          text-shadow: 0 0 30px #ff0000;
+          transform: scale(1);
+        }
+        50% {
+          color: #ff4444;
+          text-shadow:
+            0 0 50px #ff0000,
+            0 0 80px #ff000066;
+          transform: scale(1.1);
+        }
+        100% {
+          color: #ff0000;
+          text-shadow: 0 0 30px #ff0000;
+          transform: scale(1);
+        }
+      }
+      .timer-rgb {
+        animation: rgb-text 3s linear infinite;
+      }
+      .timer-urgent {
+        animation: urgent-pulse 0.5s ease-in-out infinite;
+      }
+      .card-rgb {
+        animation: rgb-glow 3s linear infinite;
+        border-width: 2px;
+      }
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .fade-in {
+        animation: fade-in 0.4s ease-out;
+      }
+    </style>
+    <script type="module" crossorigin src="/veebiarendus/Ajututvus/assets/index-S5LVsAix.js"></script>
+  </head>
+  <body class="bg-gray-950 min-h-screen">
+    <div id="root"></div>
+  </body>
+</html>
