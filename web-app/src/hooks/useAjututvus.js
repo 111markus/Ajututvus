@@ -1,12 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import {
-  ref,
-  set,
-  onValue,
-  update,
-  remove,
-  get,
-} from "firebase/database";
+import { ref, set, onValue, update, remove, get } from "firebase/database";
 import { onAuthStateChanged } from "firebase/auth";
 import { db, auth, signInPlayer } from "../firebase";
 import { QUESTIONS, shuffleArray } from "../data/questions";
@@ -142,7 +135,12 @@ export function useAjututvus() {
       timerRef.current = setInterval(updateTimer, 1000);
       return () => clearInterval(timerRef.current);
     }
-  }, [roomData?.timerStart, roomData?.status, roomData?.currentQuestionIndex, role]);
+  }, [
+    roomData?.timerStart,
+    roomData?.status,
+    roomData?.currentQuestionIndex,
+    role,
+  ]);
 
   // ========== TEACHER ACTIONS ==========
 
@@ -346,7 +344,7 @@ export function useAjututvus() {
         return false;
       }
     },
-    [user]
+    [user],
   );
 
   const submitAnswer = useCallback(
@@ -354,16 +352,13 @@ export function useAjututvus() {
       if (!roomCode || !user) return;
       const qIdx = roomData?.currentQuestionIndex || 0;
 
-      await update(
-        ref(db, `rooms/${roomCode}/answers/q${qIdx}/${pairKey}`),
-        {
-          answer,
-          submittedBy: user.uid,
-          timestamp: Date.now(),
-        }
-      );
+      await update(ref(db, `rooms/${roomCode}/answers/q${qIdx}/${pairKey}`), {
+        answer,
+        submittedBy: user.uid,
+        timestamp: Date.now(),
+      });
     },
-    [roomCode, roomData, user]
+    [roomCode, roomData, user],
   );
 
   const leaveRoom = useCallback(async () => {

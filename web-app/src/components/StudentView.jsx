@@ -44,12 +44,16 @@ export default function StudentView({
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-950 p-4">
         <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-sm card-rgb">
-          <h1 className="text-3xl font-bold text-center text-white mb-2">🎮 Ajututvus</h1>
+          <h1 className="text-3xl font-bold text-center text-white mb-2">
+            🎮 Ajututvus
+          </h1>
           <p className="text-gray-400 text-center mb-6">Liitu mänguga</p>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Sinu nimi</label>
+              <label className="block text-sm font-medium text-gray-400 mb-1">
+                Sinu nimi
+              </label>
               <input
                 type="text"
                 placeholder="Sisesta oma nimi"
@@ -60,7 +64,9 @@ export default function StudentView({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Toa kood</label>
+              <label className="block text-sm font-medium text-gray-400 mb-1">
+                Toa kood
+              </label>
               <input
                 type="tel"
                 inputMode="numeric"
@@ -93,7 +99,9 @@ export default function StudentView({
               Liitu
             </button>
 
-            {error && <p className="text-red-400 text-sm text-center">{error}</p>}
+            {error && (
+              <p className="text-red-400 text-sm text-center">{error}</p>
+            )}
           </div>
         </div>
       </div>
@@ -111,7 +119,9 @@ export default function StudentView({
           <p className="text-gray-400 mb-6">Õpetaja alustab mängu peagi</p>
 
           <div className="bg-gray-800 rounded-xl p-4 mb-4">
-            <p className="text-sm text-gray-500 mb-2">Toas on {players.length} mängijat:</p>
+            <p className="text-sm text-gray-500 mb-2">
+              Toas on {players.length} mängijat:
+            </p>
             <div className="flex flex-wrap justify-center gap-2">
               {players.map((p, i) => (
                 <span
@@ -172,7 +182,10 @@ export default function StudentView({
             </div>
 
             <p className="text-sm text-gray-400">
-              Paarilised: <strong className="text-gray-200">{partnerNames.join(", ")}</strong>
+              Paarilised:{" "}
+              <strong className="text-gray-200">
+                {partnerNames.join(", ")}
+              </strong>
             </p>
           </div>
 
@@ -216,7 +229,9 @@ export default function StudentView({
                 <div className="text-center py-4">
                   <div className="text-4xl mb-2">✅</div>
                   <p className="text-green-300 font-medium">Vastus saadetud!</p>
-                  <p className="text-gray-500 text-sm">Ootame järgmist küsimust...</p>
+                  <p className="text-gray-500 text-sm">
+                    Ootame järgmist küsimust...
+                  </p>
                 </div>
               )}
             </div>
@@ -226,7 +241,9 @@ export default function StudentView({
           {!isKysija && (
             <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-xl p-6 text-center fade-in">
               <div className="text-4xl mb-3">🗣️</div>
-              <p className="text-gray-200 font-medium">Vasta suuliselt küsijale!</p>
+              <p className="text-gray-200 font-medium">
+                Vasta suuliselt küsijale!
+              </p>
               <p className="text-gray-500 text-sm mt-2">
                 Küsija kirjutab sinu vastuse üles.
               </p>

@@ -16,7 +16,9 @@ export default function TeacherView({
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-950 p-4">
         <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-md text-center card-rgb">
-          <h1 className="text-3xl font-bold text-white mb-2">🎓 Õpetaja paneel</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">
+            🎓 Õpetaja paneel
+          </h1>
           <p className="text-gray-400 mb-6">Loo uus mängutuba õpilastele</p>
           <button
             onClick={createRoom}
@@ -42,7 +44,8 @@ export default function TeacherView({
   const totalQ = roomData?.totalQuestions || 6;
   const currentQIdx = (roomData?.currentQuestionIndex || 0) + 1;
   const pairs = roomData?.pairs ? Object.entries(roomData.pairs) : [];
-  const answers = roomData?.answers?.[`q${roomData?.currentQuestionIndex || 0}`];
+  const answers =
+    roomData?.answers?.[`q${roomData?.currentQuestionIndex || 0}`];
 
   // Timer display classes
   let timerClass = "timer-rgb";
@@ -66,7 +69,9 @@ export default function TeacherView({
 
           {/* Room code display */}
           <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-8 text-center mb-6 card-rgb">
-            <h2 className="text-sm text-gray-400 mb-2 uppercase tracking-wider">Toa kood</h2>
+            <h2 className="text-sm text-gray-400 mb-2 uppercase tracking-wider">
+              Toa kood
+            </h2>
             <div className="text-6xl font-mono font-bold tracking-widest text-white timer-rgb mb-4">
               {roomCode}
             </div>
@@ -79,7 +84,9 @@ export default function TeacherView({
               Osalejad ({players.length})
             </h3>
             {players.length === 0 ? (
-              <p className="text-gray-500 text-center py-4">Ootame osalejaid...</p>
+              <p className="text-gray-500 text-center py-4">
+                Ootame osalejaid...
+              </p>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {players.map(([uid, player]) => (
@@ -88,7 +95,9 @@ export default function TeacherView({
                     className="bg-gray-800 border border-gray-700 rounded-xl p-3 text-center"
                   >
                     <span className="text-2xl">👤</span>
-                    <p className="font-medium text-gray-200 mt-1 text-sm">{player.name}</p>
+                    <p className="font-medium text-gray-200 mt-1 text-sm">
+                      {player.name}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -98,12 +107,17 @@ export default function TeacherView({
           {/* Pairs preview (if randomized before starting) */}
           {pairs.length > 0 && (
             <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-xl p-6 mb-6">
-              <h3 className="text-lg font-bold text-white mb-4">Paarid (eelvaade)</h3>
+              <h3 className="text-lg font-bold text-white mb-4">
+                Paarid (eelvaade)
+              </h3>
               <div className="grid gap-3">
                 {pairs.map(([pairKey, pair]) => {
                   const members = Object.entries(pair.members || {});
                   return (
-                    <div key={pairKey} className="bg-gray-800 border border-gray-700 rounded-xl p-3">
+                    <div
+                      key={pairKey}
+                      className="bg-gray-800 border border-gray-700 rounded-xl p-3"
+                    >
                       <div className="flex flex-wrap gap-2">
                         {members.map(([uid, m]) => (
                           <span key={uid} className="text-gray-200 text-sm">

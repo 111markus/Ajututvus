@@ -54,7 +54,7 @@ export const QUESTIONS = [
   "Kui su elu oleks telesari, siis mis oleks praeguse hooaja pealkiri?",
   "Kui sa oleksid loom, siis mis loom sa oleksid?",
   "Mis on kõige ilusam koht, kus sa kunagi käinud oled?",
-  "Kui su aju oleks jagatud osakondadeks (nagu filmis \"Pahupidi\"), milline emotsioon on seal praegu boss?",
+  'Kui su aju oleks jagatud osakondadeks (nagu filmis "Pahupidi"), milline emotsioon on seal praegu boss?',
   "Nimeta üks asi, mida sa väga tahad teha, aga mis ajab sulle natuke hirmu nahka.",
   "Kui sa peaksid oma elu tunnuslauluks valima ühe loo, mis see praegu oleks?",
   "Kas sa eelistaksid töötada unistuste töökohal, mis maksab vähe, või igaval tööl, mis maksab väga palju?",

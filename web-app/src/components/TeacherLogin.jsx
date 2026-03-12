@@ -54,9 +54,7 @@ export default function TeacherLogin({ onLogin, error }) {
             Logi sisse
           </button>
 
-          {error && (
-            <p className="text-red-400 text-sm text-center">{error}</p>
-          )}
+          {error && <p className="text-red-400 text-sm text-center">{error}</p>}
         </div>
       </form>
     </div>

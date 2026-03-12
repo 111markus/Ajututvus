@@ -12,7 +12,8 @@ const firebaseConfig = {
   messagingSenderId: "932269592321",
   appId: "1:932269592321:web:babe5fa85fe139966d9500",
   measurementId: "G-JQKF0QNJ7X",
-  databaseURL: "https://ajututvus-default-rtdb.europe-west1.firebasedatabase.app",
+  databaseURL:
+    "https://ajututvus-default-rtdb.europe-west1.firebasedatabase.app",
 };
 
 // Initialize Firebase

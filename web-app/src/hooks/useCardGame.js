@@ -20,7 +20,19 @@ import { db, auth, signInPlayer } from "../firebase";
 function createDeck() {
   const suits = ["♠", "♥", "♦", "♣"];
   const ranks = [
-    "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",
+    "A",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "J",
+    "Q",
+    "K",
   ];
   const deck = [];
   for (const suit of suits) {
@@ -102,7 +114,7 @@ export function useCardGame() {
         setError(err.message);
       }
     },
-    [user]
+    [user],
   );
 
   // Join an existing game room
@@ -112,11 +124,9 @@ export function useCardGame() {
       try {
         const gameRef = ref(db, `games/${id}`);
         // Read current deck to deal cards
-        const { deck: currentDeck } = (
-          await new Promise((resolve) =>
-            onValue(gameRef, (snap) => resolve(snap.val()), { onlyOnce: true })
-          )
-        ) || { deck: [] };
+        const { deck: currentDeck } = (await new Promise((resolve) =>
+          onValue(gameRef, (snap) => resolve(snap.val()), { onlyOnce: true }),
+        )) || { deck: [] };
 
         const hand = currentDeck.splice(0, 7); // Deal 7 cards
 
@@ -139,7 +149,7 @@ export function useCardGame() {
         setError(err.message);
       }
     },
-    [user]
+    [user],
   );
 
   // Play a card from your hand
@@ -155,7 +165,9 @@ export function useCardGame() {
       const currentIndex = playerIds.indexOf(user.uid);
       const nextPlayer = playerIds[(currentIndex + 1) % playerIds.length];
 
-      const discard = gameState.discard ? [...gameState.discard, playedCard] : [playedCard];
+      const discard = gameState.discard
+        ? [...gameState.discard, playedCard]
+        : [playedCard];
 
       await update(ref(db, `games/${gameId}`), {
         [`players/${user.uid}/hand`]: myHand,
@@ -163,7 +175,7 @@ export function useCardGame() {
         turn: nextPlayer,
       });
     },
-    [user, gameId, gameState]
+    [user, gameId, gameState],
   );
 
   // Draw a card from the deck
