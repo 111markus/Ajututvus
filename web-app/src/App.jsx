@@ -48,8 +48,12 @@ function App() {
       <div className="min-h-screen flex items-center justify-center bg-game p-4">
         <div className="neon-glass rounded-3xl glow-purple p-10 w-full max-w-sm text-center fade-in">
           <div className="text-6xl mb-4 float">🎮</div>
-          <h1 className="text-4xl font-black text-gradient-neon mb-2 tracking-tight">AJUTUTVUS</h1>
-          <p className="text-white/40 mb-10 text-sm tracking-widest uppercase">Icebreaker Party Game</p>
+          <h1 className="text-4xl font-black text-gradient-neon mb-2 tracking-tight">
+            AJUTUTVUS
+          </h1>
+          <p className="text-white/40 mb-10 text-sm tracking-widest uppercase">
+            Icebreaker Party Game
+          </p>
 
           <div className="space-y-4">
             <button
