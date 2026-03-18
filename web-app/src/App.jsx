@@ -52,7 +52,7 @@ function App() {
             AJUTUTVUS
           </h1>
           <p className="text-white/40 mb-10 text-sm tracking-widest uppercase">
-            Icebreaker Party Game
+            Jäämurdja peomäng
           </p>
 
           <div className="space-y-4">
@@ -66,7 +66,7 @@ function App() {
               onClick={() => setRole("teacher_login")}
               className="btn-neon w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white text-lg font-bold py-4 rounded-2xl glow-purple"
             >
-              🎮 MÄNGU JUHT
+              🎮 MÄNGUJUHT
             </button>
           </div>
         </div>

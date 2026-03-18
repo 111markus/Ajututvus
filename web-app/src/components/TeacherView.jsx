@@ -20,15 +20,13 @@ export default function TeacherView({
       <div className="min-h-screen flex items-center justify-center bg-game p-4">
         <div className="neon-glass rounded-3xl glow-purple p-8 w-full max-w-md text-center fade-in">
           <div className="text-5xl mb-3">🎮</div>
-          <h1 className="text-2xl font-black text-white mb-1">GAMEMASTER</h1>
+          <h1 className="text-2xl font-black text-white mb-1">MÄNGUJUHT</h1>
           <p className="text-white/30 text-sm mb-8 uppercase tracking-widest">
             Loo uus mängutuba
           </p>
 
           <div className="mb-8">
-            <label className="block text-xs font-bold text-white/50 mb-3 uppercase tracking-wider">
-              Ringide arv
-            </label>
+            <label className="block text-xs font-bold text-white/50 mb-3 uppercase tracking-wider">Voorude arv</label>
             <div className="flex justify-center gap-2">
               {[1, 2, 3, 5].map((n) => (
                 <button
@@ -93,7 +91,7 @@ export default function TeacherView({
       <div className="min-h-screen bg-game p-4">
         <div className="max-w-2xl mx-auto">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-white font-bold text-lg">🎮 GAMEMASTER</h2>
+            <h2 className="text-white font-bold text-lg">🎮 MÄNGUJUHT</h2>
             <button
               onClick={teacherLogout}
               className="text-white/20 text-sm hover:text-white/40 transition"
@@ -104,15 +102,11 @@ export default function TeacherView({
 
           {/* Room code */}
           <div className="neon-glass rounded-3xl glow-purple p-8 text-center mb-6 fade-in">
-            <p className="text-xs text-white/30 mb-2 uppercase tracking-widest font-bold">
-              Toa kood
-            </p>
-            <div className="text-7xl font-black tracking-widest text-gradient-neon mb-3 font-mono">
-              {roomCode}
-            </div>
+            <p className="text-xs text-white/30 mb-2 uppercase tracking-widest font-bold">Toa kood</p>
+            <div className="text-7xl font-black tracking-widest text-gradient-neon mb-3 font-mono">{roomCode}</div>
             <p className="text-white/30 text-sm">Jaga seda koodi mängijatega</p>
             <p className="text-purple-400/60 text-xs mt-2 font-medium">
-              {maxRounds} {maxRounds === 1 ? "ring" : "ringi"} × 6 küsimust
+              {maxRounds} {maxRounds === 1 ? "voor" : "vooru"} × 6 küsimust
             </p>
           </div>
 
@@ -179,7 +173,7 @@ export default function TeacherView({
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-2">
             <span className="text-white/30 text-sm font-bold uppercase tracking-widest">
-              Ring {currentRound} / {maxRounds}
+              Voor {currentRound} / {maxRounds}
             </span>
           </div>
 
@@ -272,7 +266,7 @@ export default function TeacherView({
         <div className="max-w-2xl mx-auto text-center">
           <div className="text-6xl mb-4 float">🔄</div>
           <h2 className="text-3xl font-black text-white mb-2">
-            RING {currentRound - 1} LÕPPES!
+            VOOR {currentRound - 1} LÕPPES!
           </h2>
           <p className="text-white/40 mb-6">
             Mängijad otsivad uut partnerit... ({readyCount}/{totalPlayers}{" "}
@@ -280,9 +274,7 @@ export default function TeacherView({
           </p>
 
           <div className="neon-glass rounded-3xl p-6 mb-6">
-            <h3 className="text-lg font-bold text-white mb-4">
-              UUED PAARID (Ring {currentRound})
-            </h3>
+            <h3 className="text-lg font-bold text-white mb-4">UUED PAARID (Voor {currentRound})</h3>
             <div className="grid gap-3">
               {pairs.map(([pairKey, pair]) => {
                 const members = Object.entries(pair.members || {});
@@ -328,11 +320,9 @@ export default function TeacherView({
             onClick={startNextRound}
             className="btn-neon w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white text-lg font-bold py-4 rounded-2xl glow-green mb-3"
           >
-            🚀 SUNDKÄIVITA RING {currentRound}
+            🚀 SUNDKÄIVITA VOOR {currentRound}
           </button>
-          <p className="text-white/20 text-xs">
-            Vajuta kui soovid kõigile korraga alustada
-          </p>
+          <p className="text-white/20 text-xs">Vajuta kui soovid kõigile korraga alustada</p>
         </div>
       </div>
     );
@@ -345,7 +335,7 @@ export default function TeacherView({
         <div className="text-7xl mb-4 float">🎉</div>
         <h2 className="text-3xl font-black text-white mb-2">MÄNG LÄBI!</h2>
         <p className="text-white/40 mb-6">
-          {maxRounds} {maxRounds === 1 ? "ring" : "ringi"} mängitud. Aitäh!
+          {maxRounds} {maxRounds === 1 ? "voor" : "vooru"} mängitud. Aitäh!
         </p>
         <button
           onClick={deleteRoom}

@@ -149,17 +149,12 @@ export default function StudentView({
         <div className="max-w-md mx-auto text-center">
           <div className="neon-glass rounded-3xl glow-cyan p-8 mb-6 fade-in">
             <div className="text-5xl mb-3 mega-pulse">⏳</div>
-            <h2 className="text-xl font-black text-white mb-2">
-              OOTAME ALUSTAMIST
-            </h2>
+            <h2 className="text-xl font-black text-white mb-2">OOTAME ALUSTAMIST</h2>
             <p className="text-white/40 text-sm mb-3">
-              Tuba{" "}
-              <span className="font-mono font-black text-neon-cyan">
-                {roomCode}
-              </span>
+              Tuba <span className="font-mono font-black text-neon-cyan">{roomCode}</span>
             </p>
             <p className="text-white/20 text-xs">
-              {maxRounds} {maxRounds === 1 ? "ring" : "ringi"} × 6 küsimust
+              {maxRounds} {maxRounds === 1 ? "voor" : "vooru"} × 6 küsimust
             </p>
           </div>
 
@@ -212,7 +207,7 @@ export default function StudentView({
             {/* Round label */}
             <div className="text-center mb-2">
               <span className="text-pink-300/50 text-xs font-bold uppercase tracking-widest">
-                Ring {currentRound}/{maxRounds} · Küsimus {currentQIdx}/{totalQ}
+                Voor {currentRound}/{maxRounds} · Küsimus {currentQIdx}/{totalQ}
               </span>
             </div>
 
@@ -309,7 +304,7 @@ export default function StudentView({
           {/* Round info */}
           <div className="mb-4">
             <span className="text-cyan-300/40 text-xs font-bold uppercase tracking-widest">
-              Ring {currentRound}/{maxRounds} · Küsimus {currentQIdx}/{totalQ}
+              Voor {currentRound}/{maxRounds} · Küsimus {currentQIdx}/{totalQ}
             </span>
           </div>
 
@@ -370,7 +365,7 @@ export default function StudentView({
             <>
               <div className="text-5xl mb-4 mega-pulse">🚀</div>
               <h2 className="text-2xl font-black text-white mb-2">
-                RING ALGAB!
+                VOOR ALGAB!
               </h2>
               <p className="text-white/40">
                 Mõlemad on valmis — ootame käivitust...
@@ -380,11 +375,9 @@ export default function StudentView({
             <>
               <div className="text-6xl mb-4 float">🔄</div>
               <h2 className="text-2xl font-black text-white mb-2">
-                RING {currentRound - 1} LÕPPES!
+                VOOR {currentRound - 1} LÕPPES!
               </h2>
-              <p className="text-white/30 text-sm mb-6">
-                Otsi üles oma uus partner
-              </p>
+              <p className="text-white/30 text-sm mb-6">Otsi üles oma uus partner</p>
 
               <div className="partner-reveal rounded-2xl p-6 mb-6">
                 <p className="text-xs text-purple-300/60 uppercase tracking-widest mb-2 font-bold">
@@ -425,7 +418,7 @@ export default function StudentView({
           <div className="text-7xl mb-4 float">🎉</div>
           <h2 className="text-3xl font-black text-white mb-2">MÄNG LÄBI!</h2>
           <p className="text-white/40 mb-6">
-            {maxRounds} {maxRounds === 1 ? "ring" : "ringi"} mängitud. Aitäh!
+            {maxRounds} {maxRounds === 1 ? "voor" : "vooru"} mängitud. Aitäh!
           </p>
           <button
             onClick={leaveRoom}
