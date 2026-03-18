@@ -17,7 +17,7 @@ export default function TeacherLogin({ onLogin, onBack, error }) {
       >
         <div className="text-4xl text-center mb-2">🔐</div>
         <h2 className="text-xl font-bold text-center text-white mb-1">
-          GAMEMASTER
+          MÄNGU JUHT
         </h2>
         <p className="text-center text-white/30 text-sm mb-2 uppercase tracking-widest">
           Sisselogimine

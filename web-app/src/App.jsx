@@ -53,16 +53,16 @@ function App() {
 
           <div className="space-y-4">
             <button
-              onClick={() => setRole("teacher_login")}
-              className="btn-neon w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white text-lg font-bold py-4 rounded-2xl glow-purple"
-            >
-              🎮 GAMEMASTER
-            </button>
-            <button
               onClick={() => setRole("student")}
               className="btn-neon w-full bg-gradient-to-r from-cyan-600 to-blue-600 text-white text-lg font-bold py-4 rounded-2xl glow-cyan"
             >
               🎲 MÄNGIJA
+            </button>
+            <button
+              onClick={() => setRole("teacher_login")}
+              className="btn-neon w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white text-lg font-bold py-4 rounded-2xl glow-purple"
+            >
+              🎮 MÄNGU JUHT
             </button>
           </div>
         </div>
